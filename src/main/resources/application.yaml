@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: newsletter
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/cvs_newsletter
+    username: root
+    password: Password@123
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+      database-platform: org.hibernate.dialect.MySQL8Dialect
+
+application:
+  security:
+    jwt:
+      secret-key: 7b3d694878a4e756410e0b104332c245b6fc2a10d87b7031a5466b2d003ed390
+      expiration: 86400000 # a day
+      refresh-token:
+        expiration: 604800000 # 7 days
