@@ -22,7 +22,7 @@ import java.util.List;
 public class Member implements UserDetails {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
     @Column(length = 50)
@@ -44,7 +44,7 @@ public class Member implements UserDetails {
     private String genpactOnsiteSpoc;
 
     @Column(length = 9, unique = true, nullable = false)
-    private String ohr;
+    private String ohrId;
 
     private String baseLocation;
 
@@ -100,7 +100,7 @@ public class Member implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        return List.of(new SimpleGrantedAuthority(role.getValue()));
     }
 
     @Override
@@ -110,7 +110,7 @@ public class Member implements UserDetails {
 
     @Override
     public String getUsername() {
-        return ohr;
+        return ohrId;
     }
 
     @Override
