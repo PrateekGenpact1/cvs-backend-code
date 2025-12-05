@@ -1,15 +1,14 @@
 package com.cvsnewsletter.implementation;
 
 import com.cvsnewsletter.dtos.request.AuthenticationRequest;
-import com.cvsnewsletter.dtos.request.OnboardRequest;
 import com.cvsnewsletter.dtos.response.AuthenticationResponse;
 import com.cvsnewsletter.entities.Member;
 import com.cvsnewsletter.entities.Token;
-import com.cvsnewsletter.entities.enums.Role;
 import com.cvsnewsletter.entities.enums.TokenType;
 import com.cvsnewsletter.exception.BadRequestionException;
 import com.cvsnewsletter.repositories.MemberRepository;
 import com.cvsnewsletter.repositories.TokenRepository;
+import com.cvsnewsletter.services.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -18,7 +17,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class AuthenticationService {
+public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final MemberRepository repository;
     private final TokenRepository tokenRepository;
@@ -26,6 +25,7 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
+    @Override
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(

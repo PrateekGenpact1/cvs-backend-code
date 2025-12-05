@@ -11,7 +11,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Data
 @Builder
@@ -92,15 +95,27 @@ public class Member implements UserDetails {
 
     private String password;
 
+    private Boolean isRegistrationDone;
+
+    private String imageName;
+
+    private String imageType;
+
+    @Lob
+    private byte[] imageData;
+
     @Enumerated(EnumType.STRING)
-    private Role role;
+    @ElementCollection(fetch = FetchType.EAGER)
+    private Set<Role> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "member")
     private List<Token> tokens;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.getValue()));
+        return roles.stream()
+                .map(role -> new SimpleGrantedAuthority(role.getValue()))
+                .collect(Collectors.toList());
     }
 
     @Override

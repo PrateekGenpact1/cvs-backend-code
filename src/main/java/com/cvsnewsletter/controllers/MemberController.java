@@ -1,27 +1,24 @@
 package com.cvsnewsletter.controllers;
 
-import com.cvsnewsletter.dtos.request.AuthenticationRequest;
-import com.cvsnewsletter.dtos.response.AuthenticationResponse;
-import com.cvsnewsletter.implementation.AuthenticationService;
+import com.cvsnewsletter.dtos.request.OnboardRequest;
+import com.cvsnewsletter.dtos.response.MemberResponse;
+import com.cvsnewsletter.services.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/auth")
+@RequestMapping("/api/v1/member")
 @RequiredArgsConstructor
 public class MemberController {
 
-    private final AuthenticationService service;
+    private final MemberService service;
 
-    @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> authenticate(
-            @RequestBody AuthenticationRequest request
+    @GetMapping("/{ohrId}")
+    public ResponseEntity<MemberResponse> getMemberDetails(
+            @RequestParam String ohrId
     ) {
-        return ResponseEntity.ok(service.authenticate(request));
+        return ResponseEntity.ok(service.getMemberDetails(ohrId));
     }
 
 }

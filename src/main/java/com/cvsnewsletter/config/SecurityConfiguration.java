@@ -1,6 +1,8 @@
 package com.cvsnewsletter.config;
 
 import com.cvsnewsletter.entities.enums.Role;
+import com.cvsnewsletter.exception.CustomAccessDeniedHandler;
+import com.cvsnewsletter.exception.CustomAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,12 +30,15 @@ import java.util.List;
 public class SecurityConfiguration {
 
     private static final String[] WHITE_LIST_URL = {
-            "/api/v1/auth/**"
+            "/api/v1/auth/**",
+            "/api/v1/member/**"
     };
 
     private final JwtAuthenticationFilter jwtAuthFilter;
     private final AuthenticationProvider authenticationProvider;
     private final LogoutHandler logoutHandler;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -46,6 +51,10 @@ public class SecurityConfiguration {
                         // Role-based access
                         .requestMatchers("/api/v1/management/**")
                         .hasAnyRole(Role.ADMIN.name(), Role.MANAGER.name())
+                )
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint(customAuthenticationEntryPoint)
+                        .accessDeniedHandler(customAccessDeniedHandler)
                 )
                 .sessionManagement(session ->
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)

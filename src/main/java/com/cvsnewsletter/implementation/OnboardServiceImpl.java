@@ -3,10 +3,14 @@ package com.cvsnewsletter.implementation;
 import com.cvsnewsletter.dtos.request.OnboardRequest;
 import com.cvsnewsletter.entities.Member;
 import com.cvsnewsletter.entities.enums.Role;
+import com.cvsnewsletter.exception.BadRequestionException;
 import com.cvsnewsletter.repositories.MemberRepository;
 import com.cvsnewsletter.services.OnboardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -21,10 +25,22 @@ public class OnboardServiceImpl implements OnboardService {
                 .lastName(request.getLastName())
                 .genpactMailId(request.getEmail())
                 .ohrId(request.getOhrId())
-                .role(Role.USER)
+                .roles(Set.of(Role.USER))
                 .build();
+
         repository.save(user);
+
         return "User onboarded successfully!!!";
+    }
+
+    @Override
+    @Transactional
+    public void assignRoleToMember(String ohrId, Role newRole) {
+        Member member = repository.findByOhrId(ohrId)
+                .orElseThrow(() -> new BadRequestionException("Member not found"));
+
+        member.getRoles().add(newRole);
+        repository.save(member);
     }
 
 }
