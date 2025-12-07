@@ -3,6 +3,7 @@ package com.cvsnewsletter.implementation;
 import com.cvsnewsletter.dtos.request.ChangePasswordRequest;
 import com.cvsnewsletter.entities.Member;
 import com.cvsnewsletter.repositories.MemberRepository;
+import com.cvsnewsletter.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,11 +13,12 @@ import java.security.Principal;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserServiceImpl implements UserService {
 
     private final PasswordEncoder passwordEncoder;
     private final MemberRepository repository;
 
+    @Override
     public void changePassword(ChangePasswordRequest request, Principal connectedUser) {
         var user = (Member) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
 
