@@ -1,4 +1,4 @@
-package com.cvsnewsletter.dtos.response;
+package com.cvsnewsletter.dtos;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class MemberResponse {
+public class MemberDetailsDto {
     private String firstName;
     private String lastName;
     private String ohrId;
@@ -41,5 +41,6 @@ public class MemberResponse {
     private String currentAddress;
     private String emergencyContactName;
     private String emergencyPhoneNumber;
+    private Boolean isRegistrationDone;
     private String password;
 }

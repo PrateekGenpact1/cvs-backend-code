@@ -9,4 +9,6 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
 
     Optional<Member> findByOhrId(String ohrId);
 
+    Boolean existsByOhrIdAndIsRegistrationDoneTrue(String ohrId);
+
 }

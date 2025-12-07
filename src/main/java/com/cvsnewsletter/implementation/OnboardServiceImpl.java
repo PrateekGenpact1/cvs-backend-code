@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.EnumSet;
 import java.util.Set;
 
 @Service
@@ -25,7 +26,7 @@ public class OnboardServiceImpl implements OnboardService {
                 .lastName(request.getLastName())
                 .genpactMailId(request.getEmail())
                 .ohrId(request.getOhrId())
-                .roles(Set.of(Role.USER))
+                .role(Role.USER)
                 .build();
 
         repository.save(user);
@@ -36,10 +37,14 @@ public class OnboardServiceImpl implements OnboardService {
     @Override
     @Transactional
     public void assignRoleToMember(String ohrId, Role newRole) {
+        if (!EnumSet.of(Role.USER, Role.ADMIN, Role.MANAGER).contains(newRole)) {
+            throw new BadRequestionException("Invalid role: " + newRole);
+        }
+
         Member member = repository.findByOhrId(ohrId)
                 .orElseThrow(() -> new BadRequestionException("Member not found"));
 
-        member.getRoles().add(newRole);
+        member.setRole(newRole);
         repository.save(member);
     }
 
