@@ -19,7 +19,7 @@ public class MemberController {
 
     @GetMapping("/{ohrId}")
     public ResponseEntity<MemberDetailsDto> getMemberDetails(
-            @RequestParam String ohrId
+            @PathVariable String ohrId
     ) {
         return ResponseEntity.ok(service.getMemberDetails(ohrId));
     }
