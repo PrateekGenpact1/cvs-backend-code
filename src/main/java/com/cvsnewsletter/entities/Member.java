@@ -95,11 +95,15 @@ public class Member implements UserDetails {
 
     private String password;
 
-    private Boolean isRegistrationDone;
+    private Boolean isRegistrationDone = false;
+
+    private Boolean isInitialPasswordSet = false;
 
     private String imageName;
 
     private String imageType;
+
+    private String seatNumber;
 
     @Lob
     private byte[] imageData;

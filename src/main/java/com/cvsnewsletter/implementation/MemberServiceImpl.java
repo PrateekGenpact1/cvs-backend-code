@@ -1,12 +1,14 @@
 package com.cvsnewsletter.implementation;
 
-import com.cvsnewsletter.dtos.request.ChangePasswordRequest;
 import com.cvsnewsletter.dtos.MemberDetailsDto;
+import com.cvsnewsletter.dtos.request.ChangePasswordRequest;
+import com.cvsnewsletter.dtos.request.PasswordRequest;
 import com.cvsnewsletter.entities.Member;
 import com.cvsnewsletter.entities.enums.Role;
-import com.cvsnewsletter.exception.BadRequestionException;
+import com.cvsnewsletter.exception.BadRequestException;
 import com.cvsnewsletter.repositories.MemberRepository;
 import com.cvsnewsletter.services.MemberService;
+import com.cvsnewsletter.utility.CvsUtility;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -26,24 +28,29 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public MemberDetailsDto getMemberDetails(String ohrId) {
+
+        if (!CvsUtility.isValidOhrId(ohrId)) {
+            throw new BadRequestException("OHR ID must be a 9-digit numeric value.");
+        }
+
         Member memberDetails = repository.findByOhrId(ohrId)
-                .orElseThrow(() -> new BadRequestionException("Member not found with OHR: " + ohrId));
+                .orElseThrow(() -> new BadRequestException("Member not found with OHR: " + ohrId));
 
         return memberDetailsBuilder(memberDetails);
     }
 
     @Override
-    public void changePassword(ChangePasswordRequest request, Principal connectedUser) {
+    public String changePassword(ChangePasswordRequest request, Principal connectedUser) {
 
         var user = (Member) ((UsernamePasswordAuthenticationToken) connectedUser).getPrincipal();
 
         // check if the current password is correct
         if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
-            throw new BadRequestionException("Wrong password");
+            throw new BadRequestException("Wrong password");
         }
         // check if the two new passwords are the same
         if (!request.getNewPassword().equals(request.getConfirmationPassword())) {
-            throw new BadRequestionException("Password are not the same");
+            throw new BadRequestException("Password are not the same");
         }
 
         // update the password
@@ -51,17 +58,60 @@ public class MemberServiceImpl implements MemberService {
 
         // save the new password
         repository.save(user);
+
+        return "Password changed successfully!!!";
     }
 
     @Override
     public String saveMemberDetails(MemberDetailsDto memberDetails, MultipartFile image) throws IOException {
         if(repository.existsByOhrIdAndIsRegistrationDoneTrue(memberDetails.getOhrId())) {
-            throw new BadRequestionException("Registration is already completed");
+            throw new BadRequestException("Registration is already completed, please proceed with the edit");
         }
 
         repository.save(saveMemberEntity(memberDetails, image));
 
         return "Member details saved successfully!!!";
+    }
+
+    @Override
+    public String updateMemberDetails(MemberDetailsDto memberDetailsDto, MultipartFile image) throws IOException {
+        if(!repository.existsByOhrIdAndIsRegistrationDoneTrue(memberDetailsDto.getOhrId())) {
+            throw new BadRequestException("Registration is not completed");
+        }
+
+        String ohrId = memberDetailsDto.getOhrId();
+        Member memberDetailsFromDb = repository.findByOhrId(ohrId)
+                .orElseThrow(() -> new BadRequestException("Member not found with OHR: " + ohrId));
+
+
+        return "";
+    }
+
+    @Override
+    public String savePassword(PasswordRequest passwordRequest) {
+
+        String ohrId = passwordRequest.getOhrId();
+        if (!CvsUtility.isValidOhrId(ohrId)) {
+            throw new BadRequestException("OHR ID must be a 9-digit numeric value.");
+        }
+
+        if (!passwordRequest.getPassword().equals(passwordRequest.getConfirmationPassword())) {
+            throw new BadRequestException("Password are not the same");
+        }
+
+        Member user = repository.findByOhrId(passwordRequest.getOhrId())
+                .orElseThrow(() -> new BadRequestException("Member not found with OHR: " + ohrId));
+
+        if (user.getIsInitialPasswordSet() != null && user.getIsInitialPasswordSet()) {
+            throw new BadRequestException("Member has already set the initial password. Please log in and change your password.");
+        }
+
+        user.setPassword(passwordEncoder.encode(passwordRequest.getPassword()));
+        user.setIsInitialPasswordSet(true);
+
+        repository.save(user);
+
+        return "Password saved successfully!!!";
     }
 
     private Member saveMemberEntity(MemberDetailsDto memberDetails, MultipartFile image) throws IOException {
@@ -112,6 +162,7 @@ public class MemberServiceImpl implements MemberService {
                 .imageType(imageType)
                 .imageData(data)
                 .isRegistrationDone(true)
+                .seatNumber(memberDetails.getSeatNumber())
                 .build();
     }
 

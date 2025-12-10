@@ -8,18 +8,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/v1/management")
 @RequiredArgsConstructor
-public class OnboardController {
+public class ManagementController {
 
     private final OnboardService service;
 
     @PostMapping("/onboard")
-    public ResponseEntity<String> register(
+    public ResponseEntity<Map<String, String>> register(
             @RequestBody OnboardRequest request
     ) {
-        return ResponseEntity.ok(service.onboard(request));
+        return ResponseEntity.ok(Map.of("message", service.onboard(request)));
     }
 
     @PreAuthorize("hasRole('ADMIN')")

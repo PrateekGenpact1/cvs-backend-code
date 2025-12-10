@@ -19,12 +19,11 @@ public class UserController {
     private final MemberService service;
 
     @PatchMapping
-    public ResponseEntity<?> changePassword(
+    public ResponseEntity<String> changePassword(
             @RequestBody ChangePasswordRequest request,
             Principal connectedUser
     ) {
-        service.changePassword(request, connectedUser);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok(service.changePassword(request, connectedUser));
     }
 
 }

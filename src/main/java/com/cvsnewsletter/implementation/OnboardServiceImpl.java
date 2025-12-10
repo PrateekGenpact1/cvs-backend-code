@@ -3,15 +3,15 @@ package com.cvsnewsletter.implementation;
 import com.cvsnewsletter.dtos.request.OnboardRequest;
 import com.cvsnewsletter.entities.Member;
 import com.cvsnewsletter.entities.enums.Role;
-import com.cvsnewsletter.exception.BadRequestionException;
+import com.cvsnewsletter.exception.BadRequestException;
 import com.cvsnewsletter.repositories.MemberRepository;
 import com.cvsnewsletter.services.OnboardService;
+import com.cvsnewsletter.utility.CvsUtility;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.EnumSet;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +21,11 @@ public class OnboardServiceImpl implements OnboardService {
 
     @Override
     public String onboard(OnboardRequest request) {
+
+        if (!CvsUtility.isValidOhrId(request.getOhrId())) {
+            throw new BadRequestException("OHR ID must be a 9-digit numeric value.");
+        }
+
         var user = Member.builder()
                 .firstName(request.getFirstName())
                 .lastName(request.getLastName())
@@ -38,11 +43,11 @@ public class OnboardServiceImpl implements OnboardService {
     @Transactional
     public void assignRoleToMember(String ohrId, Role newRole) {
         if (!EnumSet.of(Role.USER, Role.ADMIN, Role.MANAGER).contains(newRole)) {
-            throw new BadRequestionException("Invalid role: " + newRole);
+            throw new BadRequestException("Invalid role: " + newRole);
         }
 
         Member member = repository.findByOhrId(ohrId)
-                .orElseThrow(() -> new BadRequestionException("Member not found"));
+                .orElseThrow(() -> new BadRequestException("Member not found"));
 
         member.setRole(newRole);
         repository.save(member);

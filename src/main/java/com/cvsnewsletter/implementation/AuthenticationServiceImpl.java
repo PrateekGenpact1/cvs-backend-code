@@ -5,7 +5,7 @@ import com.cvsnewsletter.dtos.response.AuthenticationResponse;
 import com.cvsnewsletter.entities.Member;
 import com.cvsnewsletter.entities.Token;
 import com.cvsnewsletter.entities.enums.TokenType;
-import com.cvsnewsletter.exception.BadRequestionException;
+import com.cvsnewsletter.exception.BadRequestException;
 import com.cvsnewsletter.repositories.MemberRepository;
 import com.cvsnewsletter.repositories.TokenRepository;
 import com.cvsnewsletter.services.AuthenticationService;
@@ -32,7 +32,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 )
         );
         var user = repository.findByOhrId(request.getOhrId())
-                .orElseThrow(() -> new BadRequestionException("User not found!!!"));
+                .orElseThrow(() -> new BadRequestException("User not found!!!"));
         var jwtToken = jwtService.generateToken(user);
         revokeAllUserTokens(user);
         saveUserToken(user, jwtToken);

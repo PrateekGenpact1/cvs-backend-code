@@ -43,4 +43,5 @@ public class MemberDetailsDto {
     private String emergencyPhoneNumber;
     private Boolean isRegistrationDone;
     private String password;
+    private String seatNumber;
 }
