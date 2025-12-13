@@ -2,6 +2,7 @@ package com.cvsnewsletter.entities.enums;
 
 import lombok.Getter;
 
+@Getter
 public enum Role {
     USER("USER"),
     ADMIN("ADMIN"),
@@ -11,10 +12,6 @@ public enum Role {
 
     Role(String value) {
         this.value = value;
-    }
-
-    public String getValue() {
-        return value;
     }
 
     public String getPrefixedValue() {

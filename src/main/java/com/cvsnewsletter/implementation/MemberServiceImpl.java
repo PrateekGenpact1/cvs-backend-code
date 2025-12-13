@@ -1,10 +1,10 @@
 package com.cvsnewsletter.implementation;
 
+import com.cvsnewsletter.dtos.LimitedMemberDetailsDto;
 import com.cvsnewsletter.dtos.MemberDetailsDto;
 import com.cvsnewsletter.dtos.request.ChangePasswordRequest;
 import com.cvsnewsletter.dtos.request.PasswordRequest;
 import com.cvsnewsletter.entities.Member;
-import com.cvsnewsletter.entities.enums.Role;
 import com.cvsnewsletter.exception.BadRequestException;
 import com.cvsnewsletter.repositories.MemberRepository;
 import com.cvsnewsletter.services.MemberService;
@@ -27,7 +27,7 @@ public class MemberServiceImpl implements MemberService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public MemberDetailsDto getMemberDetails(String ohrId) {
+    public LimitedMemberDetailsDto getMemberDetails(String ohrId) {
 
         if (!CvsUtility.isValidOhrId(ohrId)) {
             throw new BadRequestException("OHR ID must be a 9-digit numeric value.");
@@ -36,7 +36,19 @@ public class MemberServiceImpl implements MemberService {
         Member memberDetails = repository.findByOhrId(ohrId)
                 .orElseThrow(() -> new BadRequestException("Member not found with OHR: " + ohrId));
 
-        return memberDetailsBuilder(memberDetails);
+        if (Boolean.TRUE.equals(memberDetails.getIsInitialPasswordSet())) {
+            throw new BadRequestException("The member has already set their password. Please log in to view full details.");
+        }
+
+        return LimitedMemberDetailsDto.builder()
+                .firstName(memberDetails.getFirstName())
+                .lastName(memberDetails.getLastName())
+                .ohrId(memberDetails.getOhrId())
+                .emailId(memberDetails.getGenpactMailId())
+                .mobileNumber(memberDetails.getContactNumber())
+                .role(memberDetails.getRole().name())
+                .isInitialPasswordSet(memberDetails.getIsInitialPasswordSet())
+                .build();
     }
 
     @Override
@@ -65,7 +77,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public String saveMemberDetails(MemberDetailsDto memberDetails, MultipartFile image) throws IOException {
         if(repository.existsByOhrIdAndIsRegistrationDoneTrue(memberDetails.getOhrId())) {
-            throw new BadRequestException("Registration is already completed, please proceed with the edit");
+            throw new BadRequestException("Registration has already been completed. You can proceed with editing your details.");
         }
 
         repository.save(saveMemberEntity(memberDetails, image));
@@ -114,56 +126,71 @@ public class MemberServiceImpl implements MemberService {
         return "Password saved successfully!!!";
     }
 
-    private Member saveMemberEntity(MemberDetailsDto memberDetails, MultipartFile image) throws IOException {
-
-        String imageName = null;
-        String imageType = null;
-        byte[] data = null;
-
-        if (image != null && StringUtils.isNotBlank(image.getOriginalFilename())) {
-            imageName = image.getOriginalFilename();
-            imageType = image.getContentType();
-            data = image.getBytes();
+    @Override
+    public MemberDetailsDto getFullMemberDetails(String ohrId) {
+        if (!CvsUtility.isValidOhrId(ohrId)) {
+            throw new BadRequestException("OHR ID must be a 9-digit numeric value.");
         }
 
-        return Member.builder()
-                .firstName(memberDetails.getFirstName())
-                .lastName(memberDetails.getLastName())
-                .applicationArea(memberDetails.getApplicationArea())
-                .tower(memberDetails.getTower())
-                .reportingManager(memberDetails.getReportingManager())
-                .genpactOnsiteSpoc(memberDetails.getGenpactOnsiteSpoc())
-                .ohrId(memberDetails.getOhrId())
-                .baseLocation(memberDetails.getBaseLocation())
-                .primarySkill(memberDetails.getPrimarySkill())
-                .currentWorkingSkills(memberDetails.getCurrentWorkingSkills())
-                .designationBand(memberDetails.getDesignationBand())
-                .cvsLead(memberDetails.getCvsLead())
-                .clientManager(memberDetails.getClientManager())
-                .zid(memberDetails.getZid())
-                .overallExperience(memberDetails.getOverallExperience())
-                .cvsExperience(memberDetails.getCvsExperience())
-                .genpactExperience(memberDetails.getGenpactExperience())
-                .technicalExpertise(memberDetails.getTechnicalExpertise())
-                .contactNumber(memberDetails.getMobileNumber())
-                .genpactMailId(memberDetails.getEmailId())
-                .ssn(memberDetails.getSsn())
-                .cvsEmpId(memberDetails.getCvsEmpId())
-                .cvsMailId(memberDetails.getCvsMailId())
-                .highestDegree(memberDetails.getHighestDegree())
-                .birthday(memberDetails.getBirthday())
-                .anniversary(memberDetails.getAnniversary())
-                .currentAddress(memberDetails.getCurrentAddress())
-                .emergencyContactName(memberDetails.getEmergencyContactName())
-                .emergencyPhoneNumber(memberDetails.getEmergencyPhoneNumber())
-                .role(Role.USER)
-                .password(passwordEncoder.encode(memberDetails.getPassword()))
-                .imageName(imageName)
-                .imageType(imageType)
-                .imageData(data)
-                .isRegistrationDone(true)
-                .seatNumber(memberDetails.getSeatNumber())
-                .build();
+        Member memberDetails = repository.findByOhrId(ohrId)
+                .orElseThrow(() -> new BadRequestException("Member not found with OHR: " + ohrId));
+
+        return memberDetailsBuilder(memberDetails);
+    }
+
+    private Member saveMemberEntity(MemberDetailsDto memberDetails, MultipartFile image) throws IOException {
+
+        Member member = repository.findByOhrId(memberDetails.getOhrId())
+                .orElseThrow(() -> new BadRequestException("Member not found with OHR: " + memberDetails.getOhrId()));
+
+        if (CvsUtility.isValidDate(memberDetails.getBirthday())) {
+            member.setBirthday(memberDetails.getBirthday());
+        } else {
+            throw new BadRequestException("Invalid birthday format. Expected dd-MM-yyyy.");
+        }
+
+        if (CvsUtility.isValidDate(memberDetails.getAnniversary())) {
+            member.setAnniversary(memberDetails.getAnniversary());
+        } else {
+            throw new BadRequestException("Invalid anniversary format. Expected dd-MM-yyyy.");
+        }
+
+        if (image != null && StringUtils.isNotBlank(image.getOriginalFilename())) {
+            member.setImageName(image.getOriginalFilename());
+            member.setImageType(image.getContentType());
+            member.setImageData(image.getBytes());
+        }
+
+        member.setApplicationArea(memberDetails.getApplicationArea());
+        member.setTower(memberDetails.getTower());
+        member.setReportingManager(memberDetails.getReportingManager());
+        member.setGenpactOnsiteSpoc(memberDetails.getGenpactOnsiteSpoc());
+        member.setBaseLocation(memberDetails.getBaseLocation());
+        member.setPrimarySkill(memberDetails.getPrimarySkill());
+        member.setCurrentWorkingSkills(memberDetails.getCurrentWorkingSkills());
+        member.setDesignationBand(memberDetails.getDesignationBand());
+        member.setCvsLead(memberDetails.getCvsLead());
+        member.setClientManager(memberDetails.getClientManager());
+        member.setZid(memberDetails.getZid());
+        member.setOverallExperience(memberDetails.getOverallExperience());
+        member.setCvsExperience(memberDetails.getCvsExperience());
+        member.setGenpactExperience(memberDetails.getGenpactExperience());
+        member.setTechnicalExpertise(memberDetails.getTechnicalExpertise());
+        member.setSsn(memberDetails.getSsn());
+        member.setCvsEmpId(memberDetails.getCvsEmpId());
+        member.setCvsMailId(memberDetails.getCvsMailId());
+        member.setHighestDegree(memberDetails.getHighestDegree());
+        member.setBirthday(memberDetails.getBirthday());
+        member.setAnniversary(memberDetails.getAnniversary());
+        member.setCurrentAddress(memberDetails.getCurrentAddress());
+        member.setEmergencyContactName(memberDetails.getEmergencyContactName());
+        member.setEmergencyPhoneNumber(memberDetails.getEmergencyPhoneNumber());
+        member.setSeatNumber(memberDetails.getSeatNumber());
+
+        // Mark registration done
+        member.setIsRegistrationDone(true);
+
+        return member;
     }
 
     private MemberDetailsDto memberDetailsBuilder(Member memberDetails) {
@@ -197,6 +224,7 @@ public class MemberServiceImpl implements MemberService {
                 .emergencyContactName(memberDetails.getEmergencyContactName())
                 .emergencyPhoneNumber(memberDetails.getEmergencyPhoneNumber())
                 .isRegistrationDone(memberDetails.getIsRegistrationDone())
+                .isInitialPasswordSet(memberDetails.getIsInitialPasswordSet())
                 .build();
     }
 }

@@ -27,6 +27,7 @@ public class NewsletterApplication {
 						.lastName("Admin")
 						.ohrId("987654321")
 						.password(encoder.encode("password"))
+						.isInitialPasswordSet(true)
 						.role(Role.ADMIN)
 						.build());
 			}

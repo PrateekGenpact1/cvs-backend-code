@@ -103,10 +103,10 @@ public class Member implements UserDetails {
 
     private String imageType;
 
-    private String seatNumber;
-
     @Lob
     private byte[] imageData;
+
+    private String seatNumber;
 
     @Enumerated(EnumType.STRING)
     private Role role;

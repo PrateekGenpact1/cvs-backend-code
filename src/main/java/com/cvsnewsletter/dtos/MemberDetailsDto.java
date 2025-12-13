@@ -44,4 +44,5 @@ public class MemberDetailsDto {
     private Boolean isRegistrationDone;
     private String password;
     private String seatNumber;
+    private Boolean isInitialPasswordSet;
 }

@@ -1,6 +1,6 @@
-package com.cvsnewsletter.dtos.request;
+package com.cvsnewsletter.dtos;
 
-import com.cvsnewsletter.entities.enums.Role;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,11 +10,13 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OnboardRequest {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class LimitedMemberDetailsDto {
     private String firstName;
     private String lastName;
-    private String email;
     private String ohrId;
+    private String emailId;
     private String mobileNumber;
     private String role;
+    private Boolean isInitialPasswordSet;
 }

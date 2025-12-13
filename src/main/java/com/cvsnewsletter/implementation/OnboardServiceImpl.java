@@ -21,9 +21,23 @@ public class OnboardServiceImpl implements OnboardService {
 
     @Override
     public String onboard(OnboardRequest request) {
-
         if (!CvsUtility.isValidOhrId(request.getOhrId())) {
             throw new BadRequestException("OHR ID must be a 9-digit numeric value.");
+        }
+
+        if (!CvsUtility.isValidMobileNumber(request.getMobileNumber())) {
+            throw new BadRequestException("Invalid mobile number.");
+        }
+
+        Role role;
+        try {
+            role = Role.valueOf(request.getRole().toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException("Invalid role: " + request.getRole());
+        }
+
+        if (!EnumSet.of(Role.USER, Role.ADMIN, Role.MANAGER).contains(role)) {
+            throw new BadRequestException("Invalid role: " + role);
         }
 
         var user = Member.builder()
@@ -31,7 +45,8 @@ public class OnboardServiceImpl implements OnboardService {
                 .lastName(request.getLastName())
                 .genpactMailId(request.getEmail())
                 .ohrId(request.getOhrId())
-                .role(Role.USER)
+                .contactNumber(request.getMobileNumber())
+                .role(role)
                 .build();
 
         repository.save(user);
@@ -41,7 +56,18 @@ public class OnboardServiceImpl implements OnboardService {
 
     @Override
     @Transactional
-    public void assignRoleToMember(String ohrId, Role newRole) {
+    public void assignRoleToMember(String ohrId, String roleStr) {
+        if (!CvsUtility.isValidOhrId(ohrId)) {
+            throw new BadRequestException("OHR ID must be a 9-digit numeric value.");
+        }
+
+        Role newRole;
+        try {
+            newRole = Role.valueOf(roleStr.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new BadRequestException("Invalid role: " + roleStr);
+        }
+
         if (!EnumSet.of(Role.USER, Role.ADMIN, Role.MANAGER).contains(newRole)) {
             throw new BadRequestException("Invalid role: " + newRole);
         }

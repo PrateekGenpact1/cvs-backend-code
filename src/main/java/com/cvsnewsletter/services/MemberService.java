@@ -1,5 +1,6 @@
 package com.cvsnewsletter.services;
 
+import com.cvsnewsletter.dtos.LimitedMemberDetailsDto;
 import com.cvsnewsletter.dtos.request.ChangePasswordRequest;
 import com.cvsnewsletter.dtos.MemberDetailsDto;
 import com.cvsnewsletter.dtos.request.PasswordRequest;
@@ -9,7 +10,7 @@ import java.io.IOException;
 import java.security.Principal;
 
 public interface MemberService {
-    MemberDetailsDto getMemberDetails(String ohrId);
+    LimitedMemberDetailsDto getMemberDetails(String ohrId);
 
     String changePassword(ChangePasswordRequest request, Principal connectedUser);
 
@@ -18,4 +19,6 @@ public interface MemberService {
     String updateMemberDetails(MemberDetailsDto memberDetailsDto, MultipartFile image) throws IOException;
 
     String savePassword(PasswordRequest passwordRequest);
+
+    MemberDetailsDto getFullMemberDetails(String ohrId);
 }
