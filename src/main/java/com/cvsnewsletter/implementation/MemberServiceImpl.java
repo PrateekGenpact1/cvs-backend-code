@@ -18,6 +18,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -138,6 +142,18 @@ public class MemberServiceImpl implements MemberService {
         return memberDetailsBuilder(memberDetails);
     }
 
+    @Override
+    public List<MemberDetailsDto> getAllMemberDetails() {
+        List<Member> allMemberDetails = repository.findAll();
+
+        List<MemberDetailsDto> memberList = new ArrayList<>();
+        for(Member member : allMemberDetails) {
+            memberList.add(this.memberDetailsBuilder(member));
+        }
+
+        return memberList;
+    }
+
     private Member saveMemberEntity(MemberDetailsDto memberDetails, MultipartFile image) throws IOException {
 
         Member member = repository.findByOhrId(memberDetails.getOhrId())
@@ -166,8 +182,8 @@ public class MemberServiceImpl implements MemberService {
         member.setReportingManager(memberDetails.getReportingManager());
         member.setGenpactOnsiteSpoc(memberDetails.getGenpactOnsiteSpoc());
         member.setBaseLocation(memberDetails.getBaseLocation());
-        member.setPrimarySkill(memberDetails.getPrimarySkill());
-        member.setCurrentWorkingSkills(memberDetails.getCurrentWorkingSkills());
+        member.setPrimarySkill(String.join(",", memberDetails.getPrimarySkill()));
+        member.setCurrentWorkingSkills(String.join(",", memberDetails.getCurrentWorkingSkills()));
         member.setDesignationBand(memberDetails.getDesignationBand());
         member.setCvsLead(memberDetails.getCvsLead());
         member.setClientManager(memberDetails.getClientManager());
@@ -203,8 +219,8 @@ public class MemberServiceImpl implements MemberService {
                 .genpactOnsiteSpoc(memberDetails.getGenpactOnsiteSpoc())
                 .ohrId(memberDetails.getOhrId())
                 .baseLocation(memberDetails.getBaseLocation())
-                .primarySkill(memberDetails.getPrimarySkill())
-                .currentWorkingSkills(memberDetails.getCurrentWorkingSkills())
+                .primarySkill(CvsUtility.safeSplitToList(memberDetails.getPrimarySkill()))
+                .currentWorkingSkills(CvsUtility.safeSplitToList(memberDetails.getCurrentWorkingSkills()))
                 .designationBand(memberDetails.getDesignationBand())
                 .cvsLead(memberDetails.getCvsLead())
                 .clientManager(memberDetails.getClientManager())

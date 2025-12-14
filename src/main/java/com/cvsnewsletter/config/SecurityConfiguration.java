@@ -63,6 +63,7 @@ public class SecurityConfiguration {
                         // Role-based access
                         .requestMatchers("/api/v1/management/**")
                         .hasAnyRole(Role.ADMIN.name(), Role.MANAGER.name())
+                        .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(customAuthenticationEntryPoint)

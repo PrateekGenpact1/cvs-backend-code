@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -22,8 +24,8 @@ public class MemberDetailsDto {
     private String reportingManager;
     private String genpactOnsiteSpoc;
     private String baseLocation;
-    private String primarySkill;
-    private String currentWorkingSkills;
+    private List<String> primarySkill;
+    private List<String> currentWorkingSkills;
     private String designationBand;
     private String cvsLead;
     private String clientManager;
