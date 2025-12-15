@@ -28,7 +28,7 @@ public class MemberController {
     private final MemberService service;
     private final MemberRepository repository;
 
-    @GetMapping("/{ohrId}")
+    @GetMapping("/search/{ohrId}")
     public ResponseEntity<LimitedMemberDetailsDto> getMemberDetails(@PathVariable String ohrId) {
         return ResponseEntity.ok(service.getMemberDetails(ohrId));
     }
