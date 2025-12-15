@@ -1,4 +1,4 @@
-package com.cvsnewsletter.implementation;
+package com.cvsnewsletter.services.implementation;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

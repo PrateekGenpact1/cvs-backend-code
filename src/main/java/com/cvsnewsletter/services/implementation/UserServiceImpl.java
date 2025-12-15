@@ -1,4 +1,4 @@
-package com.cvsnewsletter.implementation;
+package com.cvsnewsletter.services.implementation;
 
 import com.cvsnewsletter.dtos.request.ChangePasswordRequest;
 import com.cvsnewsletter.entities.Member;

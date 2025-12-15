@@ -2,7 +2,7 @@ package com.cvsnewsletter.controllers;
 
 import com.cvsnewsletter.dtos.request.AuthenticationRequest;
 import com.cvsnewsletter.dtos.response.AuthenticationResponse;
-import com.cvsnewsletter.implementation.AuthenticationServiceImpl;
+import com.cvsnewsletter.services.implementation.AuthenticationServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

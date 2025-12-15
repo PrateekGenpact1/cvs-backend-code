@@ -1,6 +1,6 @@
 package com.cvsnewsletter.config;
 
-import com.cvsnewsletter.implementation.JwtService;
+import com.cvsnewsletter.services.implementation.JwtService;
 import com.cvsnewsletter.repositories.TokenRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

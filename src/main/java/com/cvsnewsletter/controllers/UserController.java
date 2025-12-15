@@ -25,9 +25,4 @@ public class UserController {
         return ResponseEntity.ok(service.changePassword(request, connectedUser));
     }
 
-    @GetMapping("/details")
-    public ResponseEntity<List<MemberDetailsDto>> getAllMemberDetails() {
-        return ResponseEntity.ok(service.getAllMemberDetails());
-    }
-
 }

@@ -1,4 +1,4 @@
-package com.cvsnewsletter.implementation;
+package com.cvsnewsletter.services.implementation;
 
 import com.cvsnewsletter.repositories.TokenRepository;
 import jakarta.servlet.http.HttpServletRequest;

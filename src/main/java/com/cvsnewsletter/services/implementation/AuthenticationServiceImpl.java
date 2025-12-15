@@ -1,4 +1,4 @@
-package com.cvsnewsletter.implementation;
+package com.cvsnewsletter.services.implementation;
 
 import com.cvsnewsletter.dtos.request.AuthenticationRequest;
 import com.cvsnewsletter.dtos.response.AuthenticationResponse;

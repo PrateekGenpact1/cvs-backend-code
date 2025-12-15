@@ -1,6 +1,7 @@
 package com.cvsnewsletter.utility;
 
 import lombok.experimental.UtilityClass;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
@@ -69,5 +70,12 @@ public class CvsUtility {
         return Arrays.asList(input.split(","));
     }
 
+    public static String getOrDefault(String value) {
+        return StringUtils.isNotBlank(value) ? value : StringUtils.EMPTY;
+    }
+
+    public static Boolean getOrDefault(Boolean value) {
+        return (value != null) ? value : false;
+    }
 
 }

@@ -22,6 +22,4 @@ public interface MemberService {
     String savePassword(PasswordRequest passwordRequest);
 
     MemberDetailsDto getFullMemberDetails(String ohrId);
-
-    List<MemberDetailsDto> getAllMemberDetails();
 }

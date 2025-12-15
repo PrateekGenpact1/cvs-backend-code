@@ -1,16 +1,15 @@
 package com.cvsnewsletter.controllers;
 
+import com.cvsnewsletter.dtos.MemberDetailsDto;
 import com.cvsnewsletter.dtos.request.AssignRoleRequest;
 import com.cvsnewsletter.dtos.request.OnboardRequest;
 import com.cvsnewsletter.services.OnboardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -37,6 +36,11 @@ public class ManagementController {
                 "message",
                 String.format("Role %s assigned successfully to member with OHR ID %s", role, ohrId)
         ));
+    }
+
+    @GetMapping("/teams")
+    public ResponseEntity<List<MemberDetailsDto>> getAllMemberDetails() {
+        return ResponseEntity.ok(service.getAllMemberDetails());
     }
 
 }

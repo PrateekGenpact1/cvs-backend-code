@@ -1,4 +1,4 @@
-package com.cvsnewsletter.implementation;
+package com.cvsnewsletter.services.implementation;
 
 import com.cvsnewsletter.dtos.LimitedMemberDetailsDto;
 import com.cvsnewsletter.dtos.MemberDetailsDto;
@@ -45,13 +45,13 @@ public class MemberServiceImpl implements MemberService {
         }
 
         return LimitedMemberDetailsDto.builder()
-                .firstName(memberDetails.getFirstName())
-                .lastName(memberDetails.getLastName())
-                .ohrId(memberDetails.getOhrId())
-                .emailId(memberDetails.getGenpactMailId())
-                .mobileNumber(memberDetails.getContactNumber())
+                .firstName(CvsUtility.getOrDefault(memberDetails.getFirstName()))
+                .lastName(CvsUtility.getOrDefault(memberDetails.getLastName()))
+                .ohrId(CvsUtility.getOrDefault(memberDetails.getOhrId()))
+                .emailId(CvsUtility.getOrDefault(memberDetails.getGenpactMailId()))
+                .mobileNumber(CvsUtility.getOrDefault(memberDetails.getContactNumber()))
                 .role(memberDetails.getRole().name())
-                .isInitialPasswordSet(memberDetails.getIsInitialPasswordSet())
+                .isInitialPasswordSet(CvsUtility.getOrDefault(memberDetails.getIsInitialPasswordSet()))
                 .build();
     }
 
@@ -140,18 +140,6 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new BadRequestException("Member not found with OHR: " + ohrId));
 
         return memberDetailsBuilder(memberDetails);
-    }
-
-    @Override
-    public List<MemberDetailsDto> getAllMemberDetails() {
-        List<Member> allMemberDetails = repository.findAll();
-
-        List<MemberDetailsDto> memberList = new ArrayList<>();
-        for(Member member : allMemberDetails) {
-            memberList.add(this.memberDetailsBuilder(member));
-        }
-
-        return memberList;
     }
 
     private Member saveMemberEntity(MemberDetailsDto memberDetails, MultipartFile image) throws IOException {

@@ -1,5 +1,6 @@
-package com.cvsnewsletter.implementation;
+package com.cvsnewsletter.services.implementation;
 
+import com.cvsnewsletter.dtos.MemberDetailsDto;
 import com.cvsnewsletter.dtos.request.OnboardRequest;
 import com.cvsnewsletter.entities.Member;
 import com.cvsnewsletter.entities.enums.Role;
@@ -11,7 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -77,6 +80,53 @@ public class OnboardServiceImpl implements OnboardService {
 
         member.setRole(newRole);
         repository.save(member);
+    }
+
+    @Override
+    public List<MemberDetailsDto> getAllMemberDetails() {
+        List<Member> allMemberDetails = repository.findAll();
+
+        List<MemberDetailsDto> memberList = new ArrayList<>();
+        for(Member member : allMemberDetails) {
+            memberList.add(this.memberDetailsBuilder(member));
+        }
+
+        return memberList;
+    }
+
+    private MemberDetailsDto memberDetailsBuilder(Member memberDetails) {
+        return MemberDetailsDto.builder()
+                .firstName(memberDetails.getFirstName())
+                .lastName(memberDetails.getLastName())
+                .applicationArea(memberDetails.getApplicationArea())
+                .tower(memberDetails.getTower())
+                .reportingManager(memberDetails.getReportingManager())
+                .genpactOnsiteSpoc(memberDetails.getGenpactOnsiteSpoc())
+                .ohrId(memberDetails.getOhrId())
+                .baseLocation(memberDetails.getBaseLocation())
+                .primarySkill(CvsUtility.safeSplitToList(memberDetails.getPrimarySkill()))
+                .currentWorkingSkills(CvsUtility.safeSplitToList(memberDetails.getCurrentWorkingSkills()))
+                .designationBand(memberDetails.getDesignationBand())
+                .cvsLead(memberDetails.getCvsLead())
+                .clientManager(memberDetails.getClientManager())
+                .zid(memberDetails.getZid())
+                .overallExperience(memberDetails.getOverallExperience())
+                .cvsExperience(memberDetails.getCvsExperience())
+                .genpactExperience(memberDetails.getGenpactExperience())
+                .technicalExpertise(memberDetails.getTechnicalExpertise())
+                .mobileNumber(memberDetails.getContactNumber())
+                .emailId(memberDetails.getGenpactMailId())
+                .ssn(memberDetails.getSsn())
+                .cvsEmpId(memberDetails.getCvsEmpId())
+                .highestDegree(memberDetails.getHighestDegree())
+                .birthday(memberDetails.getBirthday())
+                .anniversary(memberDetails.getAnniversary())
+                .currentAddress(memberDetails.getCurrentAddress())
+                .emergencyContactName(memberDetails.getEmergencyContactName())
+                .emergencyPhoneNumber(memberDetails.getEmergencyPhoneNumber())
+                .isRegistrationDone(memberDetails.getIsRegistrationDone())
+                .isInitialPasswordSet(memberDetails.getIsInitialPasswordSet())
+                .build();
     }
 
 }
