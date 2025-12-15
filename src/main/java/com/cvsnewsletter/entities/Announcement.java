@@ -19,8 +19,6 @@ public class Announcement {
     private Integer id;
 
     @Lob
-    @Basic(fetch = FetchType.LAZY)
-    @Column(nullable = false)
     private byte[] imageData;
 
     @Column(nullable = false)

@@ -38,14 +38,14 @@ public class GlobalExceptionHandler {
     /**
      * Handles any other generic exceptions with a user-friendly message.
      */
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Map<String, Object>> handleGenericException(Exception ex) {
-        Map<String, Object> body = new HashMap<>();
-        body.put("status", HttpStatus.INTERNAL_SERVER_ERROR);
-        body.put("message", "CVS portal is down or not reachable at the moment. Please try again later.");
-        return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
+//    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<Map<String, Object>> handleGenericException(Exception ex) {
+//        Map<String, Object> body = new HashMap<>();
+//        body.put("status", HttpStatus.INTERNAL_SERVER_ERROR);
+//        body.put("message", "CVS portal is down or not reachable at the moment. Please try again later.");
+//        return new ResponseEntity<>(body, HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
 
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler(BadCredentialsException.class)

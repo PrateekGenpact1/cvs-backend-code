@@ -49,7 +49,7 @@ public class CvsUtility {
 
     private static final DateTimeFormatter FORMATTER =
             DateTimeFormatter.ofPattern("dd-MM-yyyy")
-                    .withResolverStyle(ResolverStyle.STRICT);
+                    .withResolverStyle(ResolverStyle.SMART);
 
     public static boolean isValidDate(String dateStr) {
         if (dateStr == null || dateStr.isBlank()) {

@@ -46,30 +46,6 @@ public class MemberController {
         return ResponseEntity.ok(Map.of("message", service.savePassword(passwordRequest)));
     }
 
-    @PostMapping("/register")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER') or hasRole('USER')")
-    public ResponseEntity<Map<String, String>> saveMemberDetails(
-            @RequestPart MemberDetailsDto memberDetailsDto,
-            @RequestPart(value = "image", required = false) MultipartFile image
-    ) {
-        try {
-            if (image != null && !CvsUtility.isImageFile(image)) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                        .body(Map.of("message","Invalid file type. Only image files are allowed."));
-            }
-
-            String message = service.saveMemberDetails(memberDetailsDto, image);
-            return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message", message));
-        } catch (IOException ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("message", "Error processing image: " + ex.getMessage()));
-
-        } catch (Exception ex) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(Map.of("message", "Unexpected error occurred: " + ex.getMessage()));
-        }
-    }
-
     @PutMapping("/update")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, String>> updateMemberDetails(

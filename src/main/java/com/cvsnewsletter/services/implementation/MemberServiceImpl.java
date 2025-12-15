@@ -147,16 +147,20 @@ public class MemberServiceImpl implements MemberService {
         Member member = repository.findByOhrId(memberDetails.getOhrId())
                 .orElseThrow(() -> new BadRequestException("Member not found with OHR: " + memberDetails.getOhrId()));
 
-        if (CvsUtility.isValidDate(memberDetails.getBirthday())) {
-            member.setBirthday(memberDetails.getBirthday());
-        } else {
-            throw new BadRequestException("Invalid birthday format. Expected dd-MM-yyyy.");
+        if(StringUtils.isNotBlank(memberDetails.getBirthday())) {
+            if (CvsUtility.isValidDate(memberDetails.getBirthday())) {
+                member.setBirthday(memberDetails.getBirthday());
+            } else {
+                throw new BadRequestException("Invalid birthday format. Expected dd-MM-yyyy.");
+            }
         }
 
-        if (CvsUtility.isValidDate(memberDetails.getAnniversary())) {
-            member.setAnniversary(memberDetails.getAnniversary());
-        } else {
-            throw new BadRequestException("Invalid anniversary format. Expected dd-MM-yyyy.");
+        if(StringUtils.isNotBlank(memberDetails.getAnniversary())) {
+            if (CvsUtility.isValidDate(memberDetails.getAnniversary())) {
+                member.setAnniversary(memberDetails.getAnniversary());
+            } else {
+                throw new BadRequestException("Invalid anniversary format. Expected dd-MM-yyyy.");
+            }
         }
 
         if (image != null && StringUtils.isNotBlank(image.getOriginalFilename())) {
