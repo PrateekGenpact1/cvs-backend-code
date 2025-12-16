@@ -14,5 +14,5 @@ public class GalleryResponse {
     private Integer id;
     private String title;
     private LocalDate uploadDate;
-    private List<String> imageUrls;
+    private List<ImageLinkResponse> imageUrls;
 }

@@ -2,6 +2,7 @@ package com.cvsnewsletter.services.implementation;
 
 import com.cvsnewsletter.dtos.request.GalleryRequest;
 import com.cvsnewsletter.dtos.response.GalleryResponse;
+import com.cvsnewsletter.dtos.response.ImageLinkResponse;
 import com.cvsnewsletter.dtos.response.PagedGalleryResponse;
 import com.cvsnewsletter.entities.Gallery;
 import com.cvsnewsletter.entities.GalleryImage;
@@ -77,7 +78,11 @@ public class GalleryServiceImpl implements GalleryService {
                         .uploadDate(gallery.getUploadDate())
                         .imageUrls(
                                 gallery.getImages().stream()
-                                        .map(img -> baseUrl + "/api/v1/galleries/images/" + img.getId())
+                                        .map(img -> ImageLinkResponse.builder()
+                                                .id(img.getId())
+                                                .link(baseUrl + "/api/v1/galleries/images/" + img.getId())
+                                                .build()
+                                        )
                                         .collect(Collectors.toList())
                         )
                         .build()
