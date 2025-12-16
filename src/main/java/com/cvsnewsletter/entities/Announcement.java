@@ -19,6 +19,7 @@ public class Announcement {
     private Integer id;
 
     @Lob
+    @Column(columnDefinition = "MEDIUMBLOB")
     private byte[] imageData;
 
     @Column(nullable = false)
