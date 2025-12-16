@@ -5,6 +5,7 @@ import com.cvsnewsletter.dtos.request.ChangePasswordRequest;
 import com.cvsnewsletter.dtos.MemberDetailsDto;
 import com.cvsnewsletter.dtos.request.PasswordRequest;
 import com.cvsnewsletter.dtos.response.MemberLocationResponse;
+import com.cvsnewsletter.dtos.response.MemberSummaryResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -25,4 +26,6 @@ public interface MemberService {
     MemberDetailsDto getFullMemberDetails(String ohrId);
 
     List<MemberLocationResponse> getMembersByLocation(String location);
+
+    List<MemberSummaryResponse> getAllMembersSummary();
 }

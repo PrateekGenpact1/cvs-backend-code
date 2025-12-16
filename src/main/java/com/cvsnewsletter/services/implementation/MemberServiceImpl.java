@@ -5,6 +5,7 @@ import com.cvsnewsletter.dtos.MemberDetailsDto;
 import com.cvsnewsletter.dtos.request.ChangePasswordRequest;
 import com.cvsnewsletter.dtos.request.PasswordRequest;
 import com.cvsnewsletter.dtos.response.MemberLocationResponse;
+import com.cvsnewsletter.dtos.response.MemberSummaryResponse;
 import com.cvsnewsletter.entities.Member;
 import com.cvsnewsletter.exception.BadRequestException;
 import com.cvsnewsletter.repositories.MemberRepository;
@@ -89,17 +90,69 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public String updateMemberDetails(MemberDetailsDto memberDetailsDto, MultipartFile image) throws IOException {
-        if(!repository.existsByOhrIdAndIsRegistrationDoneTrue(memberDetailsDto.getOhrId())) {
-            throw new BadRequestException("Registration is not completed");
+    public String updateMemberDetails(MemberDetailsDto dto, MultipartFile image) throws IOException {
+        if (!repository.existsByOhrIdAndIsRegistrationDoneTrue(dto.getOhrId())) {
+            throw new BadRequestException("You haven't completed the registration, first complete the registration then proceed with edit.");
         }
 
-        String ohrId = memberDetailsDto.getOhrId();
-        Member memberDetailsFromDb = repository.findByOhrId(ohrId)
-                .orElseThrow(() -> new BadRequestException("Member not found with OHR: " + ohrId));
+        Member member = repository.findByOhrId(dto.getOhrId())
+                .orElseThrow(() -> new BadRequestException("Member not found with OHR: " + dto.getOhrId()));
 
+        member.setFirstName(updateIfNotBlank(dto.getFirstName(), member.getFirstName()));
+        member.setLastName(updateIfNotBlank(dto.getLastName(), member.getLastName()));
+        member.setContactNumber(updateIfNotBlank(dto.getMobileNumber(), member.getContactNumber()));
+        member.setCvsMailId(updateIfNotBlank(dto.getEmailId(), member.getCvsMailId()));
+        member.setApplicationArea(updateIfNotBlank(dto.getApplicationArea(), member.getApplicationArea()));
+        member.setTower(updateIfNotBlank(dto.getTower(), member.getTower()));
+        member.setReportingManager(updateIfNotBlank(dto.getReportingManager(), member.getReportingManager()));
+        member.setGenpactOnsiteSpoc(updateIfNotBlank(dto.getGenpactOnsiteSpoc(), member.getGenpactOnsiteSpoc()));
+        member.setBaseLocation(updateIfNotBlank(dto.getBaseLocation(), member.getBaseLocation()));
+        member.setDesignationBand(updateIfNotBlank(dto.getDesignationBand(), member.getDesignationBand()));
+        member.setCvsLead(updateIfNotBlank(dto.getCvsLead(), member.getCvsLead()));
+        member.setClientManager(updateIfNotBlank(dto.getClientManager(), member.getClientManager()));
+        member.setZid(updateIfNotBlank(dto.getZid(), member.getZid()));
+        member.setOverallExperience(updateIfNotBlank(dto.getOverallExperience(), member.getOverallExperience()));
+        member.setCvsExperience(updateIfNotBlank(dto.getCvsExperience(), member.getCvsExperience()));
+        member.setGenpactExperience(updateIfNotBlank(dto.getGenpactExperience(), member.getGenpactExperience()));
+        member.setTechnicalExpertise(updateIfNotBlank(dto.getTechnicalExpertise(), member.getTechnicalExpertise()));
+        member.setSsn(updateIfNotBlank(dto.getSsn(), member.getSsn()));
+        member.setCvsEmpId(updateIfNotBlank(dto.getCvsEmpId(), member.getCvsEmpId()));
+        member.setCvsMailId(updateIfNotBlank(dto.getCvsMailId(), member.getCvsMailId()));
+        member.setHighestDegree(updateIfNotBlank(dto.getHighestDegree(), member.getHighestDegree()));
+        member.setCurrentAddress(updateIfNotBlank(dto.getCurrentAddress(), member.getCurrentAddress()));
+        member.setEmergencyContactName(updateIfNotBlank(dto.getEmergencyContactName(), member.getEmergencyContactName()));
+        member.setEmergencyPhoneNumber(updateIfNotBlank(dto.getEmergencyPhoneNumber(), member.getEmergencyPhoneNumber()));
+        member.setSeatNumber(updateIfNotBlank(dto.getSeatNumber(), member.getSeatNumber()));
+        member.setPrimarySkill(updateListField(dto.getPrimarySkill(), member.getPrimarySkill()));
+        member.setCurrentWorkingSkills(updateListField(dto.getCurrentWorkingSkills(), member.getCurrentWorkingSkills()));
 
-        return "";
+        if (StringUtils.isNotBlank(dto.getBirthday())) {
+            if (CvsUtility.isValidDate(dto.getBirthday())) {
+                member.setBirthday(dto.getBirthday());
+            } else {
+                throw new BadRequestException("Invalid birthday format. Expected dd-MM-yyyy.");
+            }
+        }
+
+        if (StringUtils.isNotBlank(dto.getAnniversary())) {
+            if (CvsUtility.isValidDate(dto.getAnniversary())) {
+                member.setAnniversary(dto.getAnniversary());
+            } else {
+                throw new BadRequestException("Invalid anniversary format. Expected dd-MM-yyyy.");
+            }
+        }
+
+        if (image != null && StringUtils.isNotBlank(image.getOriginalFilename())) {
+            if (!CvsUtility.isImageFile(image)) {
+                throw new BadRequestException("Invalid file type. Only image files are allowed.");
+            }
+            member.setImageName(image.getOriginalFilename());
+            member.setImageType(image.getContentType());
+            member.setImageData(image.getBytes());
+        }
+
+        repository.save(member);
+        return "Member details updated successfully.";
     }
 
     @Override
@@ -151,6 +204,24 @@ public class MemberServiceImpl implements MemberService {
                         .ohrId(m.getOhrId())
                         .seatNumber(CvsUtility.getOrDefault(m.getSeatNumber()))
                         .build())
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<MemberSummaryResponse> getAllMembersSummary() {
+        return repository.findAll().stream()
+                .map(member -> MemberSummaryResponse.builder()
+                        .firstName(CvsUtility.getOrDefault(member.getFirstName()))
+                        .lastName(CvsUtility.getOrDefault(member.getLastName()))
+                        .applicationArea(CvsUtility.getOrDefault(member.getApplicationArea()))
+                        .tower(CvsUtility.getOrDefault(member.getTower()))
+                        .reportingManager(CvsUtility.getOrDefault(member.getReportingManager()))
+                        .birthday(CvsUtility.getOrDefault(member.getBirthday()))
+                        .anniversary(CvsUtility.getOrDefault(member.getAnniversary()))
+                        .baseLocation(CvsUtility.getOrDefault(member.getBaseLocation()))
+                        .seatNumber(CvsUtility.getOrDefault(member.getSeatNumber()))
+                        .build()
+                )
                 .collect(Collectors.toList());
     }
 
@@ -247,4 +318,16 @@ public class MemberServiceImpl implements MemberService {
                 .isInitialPasswordSet(memberDetails.getIsInitialPasswordSet())
                 .build();
     }
+
+    private String updateIfNotBlank(String newValue, String oldValue) {
+        return StringUtils.isNotBlank(newValue) ? newValue : oldValue;
+    }
+
+    private String updateListField(List<String> newList, String oldValue) {
+        if (newList == null || newList.isEmpty()) {
+            return oldValue;
+        }
+        return String.join(",", newList);
+    }
+
 }

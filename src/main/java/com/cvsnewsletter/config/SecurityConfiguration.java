@@ -61,10 +61,7 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(WHITE_LIST_URL).permitAll()
-
-                        // Role-based access
-                        .requestMatchers("/api/v1/management/**")
-                        .hasAnyRole(Role.ADMIN.name(), Role.MANAGER.name())
+                        .requestMatchers("/api/v1/management/**").hasAnyRole(Role.ADMIN.name(), Role.MANAGER.name())
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex
