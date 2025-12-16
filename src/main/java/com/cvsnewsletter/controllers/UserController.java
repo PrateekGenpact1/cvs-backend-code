@@ -2,6 +2,7 @@ package com.cvsnewsletter.controllers;
 
 import com.cvsnewsletter.dtos.MemberDetailsDto;
 import com.cvsnewsletter.dtos.request.ChangePasswordRequest;
+import com.cvsnewsletter.dtos.response.MemberLocationResponse;
 import com.cvsnewsletter.services.MemberService;
 import com.cvsnewsletter.utility.CvsUtility;
 import lombok.RequiredArgsConstructor;
@@ -54,5 +55,13 @@ public class UserController {
                     .body(Map.of("message", "Unexpected error occurred: " + ex.getMessage()));
         }
     }
+
+    @GetMapping("/seating-arrangement")
+    public ResponseEntity<List<MemberLocationResponse>> getMembersByLocation(
+            @RequestParam String location) {
+        List<MemberLocationResponse> members = service.getMembersByLocation(location);
+        return ResponseEntity.ok(members);
+    }
+
 
 }

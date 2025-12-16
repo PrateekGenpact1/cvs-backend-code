@@ -1,5 +1,6 @@
 package com.cvsnewsletter.services.implementation;
 
+import com.cvsnewsletter.entities.Member;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -55,6 +56,11 @@ public class JwtService {
         extraClaims.put("roles", userDetails.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toList()));
+
+        if (userDetails instanceof Member member) {
+            Boolean registrationFlag = member.getIsRegistrationDone();
+            extraClaims.put("isRegistrationDone", registrationFlag != null ? registrationFlag : false);
+        }
 
         return Jwts
                 .builder()

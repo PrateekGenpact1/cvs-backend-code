@@ -4,6 +4,7 @@ import com.cvsnewsletter.dtos.LimitedMemberDetailsDto;
 import com.cvsnewsletter.dtos.MemberDetailsDto;
 import com.cvsnewsletter.dtos.request.ChangePasswordRequest;
 import com.cvsnewsletter.dtos.request.PasswordRequest;
+import com.cvsnewsletter.dtos.response.MemberLocationResponse;
 import com.cvsnewsletter.entities.Member;
 import com.cvsnewsletter.exception.BadRequestException;
 import com.cvsnewsletter.repositories.MemberRepository;
@@ -18,8 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -140,6 +139,19 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(() -> new BadRequestException("Member not found with OHR: " + ohrId));
 
         return memberDetailsBuilder(memberDetails);
+    }
+
+    @Override
+    public List<MemberLocationResponse> getMembersByLocation(String location) {
+        List<Member> members = repository.findByBaseLocation(location);
+
+        return members.stream()
+                .map(m -> MemberLocationResponse.builder()
+                        .name(m.getFirstName() + " " + m.getLastName())
+                        .ohrId(m.getOhrId())
+                        .seatNumber(CvsUtility.getOrDefault(m.getSeatNumber()))
+                        .build())
+                .collect(Collectors.toList());
     }
 
     private Member saveMemberEntity(MemberDetailsDto memberDetails, MultipartFile image) throws IOException {
