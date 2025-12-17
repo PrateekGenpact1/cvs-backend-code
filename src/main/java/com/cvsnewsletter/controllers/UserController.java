@@ -7,7 +7,6 @@ import com.cvsnewsletter.dtos.response.MemberSummaryResponse;
 import com.cvsnewsletter.services.MemberService;
 import com.cvsnewsletter.utility.CvsUtility;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -26,7 +25,7 @@ public class UserController {
 
     private final MemberService service;
 
-    @PatchMapping
+    @PutMapping
     public ResponseEntity<Map<String, String>> changePassword(
             @RequestBody ChangePasswordRequest request,
             Principal connectedUser
@@ -64,7 +63,7 @@ public class UserController {
         return ResponseEntity.ok(members);
     }
 
-    @PatchMapping(value = "/update", consumes = {"multipart/form-data"})
+    @PutMapping(value = "/update", consumes = {"multipart/form-data"})
     public ResponseEntity<Map<String, String>> updateMemberDetails(
             @RequestPart MemberDetailsDto memberDetailsDto,
             @RequestPart(value = "image", required = false) MultipartFile image
