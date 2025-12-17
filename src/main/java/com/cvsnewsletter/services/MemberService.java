@@ -13,7 +13,7 @@ import java.security.Principal;
 import java.util.List;
 
 public interface MemberService {
-    LimitedMemberDetailsDto getMemberDetails(String ohrId);
+    LimitedMemberDetailsDto getMemberDetails(String ohrId, String emergencyPhoneNumber);
 
     String changePassword(ChangePasswordRequest request, Principal connectedUser);
 

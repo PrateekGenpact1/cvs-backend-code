@@ -12,6 +12,8 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
 
     Optional<Member> findByOhrId(String ohrId);
 
+    Optional<Member> findByOhrIdAndEmergencyPhoneNumber(String ohrId, String emergencyPhoneNumber);
+
     Boolean existsByOhrIdAndIsRegistrationDoneTrue(String ohrId);
 
     @Query("SELECT m FROM Member m WHERE m.baseLocation = :location")

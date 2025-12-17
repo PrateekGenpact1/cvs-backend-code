@@ -40,11 +40,11 @@ public class CvsUtility {
     }
 
     public static boolean isValidOhrId(String ohrId) {
-        return ohrId != null && ohrId.matches("\\d{9}");
+        return StringUtils.isNotBlank(ohrId) && ohrId.matches("\\d{9}");
     }
 
     public static boolean isValidMobileNumber(String mobileNumber) {
-        return mobileNumber != null && mobileNumber.matches("\\d{10}");
+        return StringUtils.isNotBlank(mobileNumber) && mobileNumber.matches("\\d{10}");
     }
 
     private static final DateTimeFormatter FORMATTER =

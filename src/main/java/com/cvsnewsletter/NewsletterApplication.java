@@ -29,6 +29,8 @@ public class NewsletterApplication {
 						.password(encoder.encode("password"))
 						.isInitialPasswordSet(true)
 						.role(Role.ADMIN)
+						.emergencyContactName("Admin")
+						.emergencyPhoneNumber("9876543210")
 						.build());
 			}
 		};

@@ -29,8 +29,11 @@ public class MemberController {
     private final MemberRepository repository;
 
     @GetMapping("/search/{ohrId}")
-    public ResponseEntity<LimitedMemberDetailsDto> getMemberDetails(@PathVariable String ohrId) {
-        return ResponseEntity.ok(service.getMemberDetails(ohrId));
+    public ResponseEntity<LimitedMemberDetailsDto> getMemberDetails(
+            @PathVariable String ohrId,
+            @RequestParam String emergencyPhoneNumber
+    ) {
+        return ResponseEntity.ok(service.getMemberDetails(ohrId, emergencyPhoneNumber));
     }
 
     @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER') or hasRole('USER')")

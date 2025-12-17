@@ -32,6 +32,14 @@ public class OnboardServiceImpl implements OnboardService {
             throw new BadRequestException("Invalid mobile number.");
         }
 
+        if (!CvsUtility.isValidMobileNumber(request.getEmergencyPhoneNumber())) {
+            throw new BadRequestException("Invalid mobile number.");
+        }
+
+        if (request.getMobileNumber().equals(request.getEmergencyPhoneNumber())) {
+            throw new BadRequestException("Mobile number and emergency phone number cannot be the same.");
+        }
+
         Role role;
         try {
             role = Role.valueOf(request.getRole().toUpperCase());
@@ -49,6 +57,8 @@ public class OnboardServiceImpl implements OnboardService {
                 .genpactMailId(request.getEmail())
                 .ohrId(request.getOhrId())
                 .contactNumber(request.getMobileNumber())
+                .emergencyContactName(request.getEmergencyContactName())
+                .emergencyPhoneNumber(request.getEmergencyPhoneNumber())
                 .role(role)
                 .build();
 

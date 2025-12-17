@@ -31,14 +31,20 @@ public class MemberServiceImpl implements MemberService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public LimitedMemberDetailsDto getMemberDetails(String ohrId) {
+    public LimitedMemberDetailsDto getMemberDetails(String ohrId, String emergencyPhoneNumber) {
 
         if (!CvsUtility.isValidOhrId(ohrId)) {
             throw new BadRequestException("OHR ID must be a 9-digit numeric value.");
         }
 
-        Member memberDetails = repository.findByOhrId(ohrId)
-                .orElseThrow(() -> new BadRequestException("Member not found with OHR: " + ohrId));
+        if (!CvsUtility.isValidMobileNumber(emergencyPhoneNumber)) {
+            throw new BadRequestException("Invalid mobile number.");
+        }
+
+        Member memberDetails = repository.findByOhrIdAndEmergencyPhoneNumber(ohrId, emergencyPhoneNumber)
+                .orElseThrow(() -> new BadRequestException(
+                        String.format("Member not found with OHR ID: %s and Emergency Phone Number: %s", ohrId, emergencyPhoneNumber)
+                ));
 
         if (Boolean.TRUE.equals(memberDetails.getIsInitialPasswordSet())) {
             throw new BadRequestException("The member has already set their password. Please log in to view full details.");
@@ -52,6 +58,8 @@ public class MemberServiceImpl implements MemberService {
                 .mobileNumber(CvsUtility.getOrDefault(memberDetails.getContactNumber()))
                 .role(memberDetails.getRole().name())
                 .isInitialPasswordSet(CvsUtility.getOrDefault(memberDetails.getIsInitialPasswordSet()))
+                .emergencyContactName(CvsUtility.getOrDefault(memberDetails.getEmergencyContactName()))
+                .emergencyPhoneNumber(CvsUtility.getOrDefault(memberDetails.getEmergencyPhoneNumber()))
                 .build();
     }
 

@@ -4,6 +4,7 @@ import com.cvsnewsletter.dtos.MemberDetailsDto;
 import com.cvsnewsletter.dtos.request.AssignRoleRequest;
 import com.cvsnewsletter.dtos.request.OnboardRequest;
 import com.cvsnewsletter.services.OnboardService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,7 +22,7 @@ public class ManagementController {
 
     @PostMapping("/onboard")
     public ResponseEntity<Map<String, String>> register(
-            @RequestBody OnboardRequest request
+            @Valid @RequestBody OnboardRequest request
     ) {
         return ResponseEntity.ok(Map.of("message", service.onboard(request)));
     }

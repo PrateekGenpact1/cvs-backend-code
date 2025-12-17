@@ -19,4 +19,6 @@ public class LimitedMemberDetailsDto {
     private String mobileNumber;
     private String role;
     private Boolean isInitialPasswordSet;
+    private String emergencyContactName;
+    private String emergencyPhoneNumber;
 }
