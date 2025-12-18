@@ -14,6 +14,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
@@ -48,6 +50,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .tokenType(TokenType.BEARER)
                 .expired(false)
                 .revoked(false)
+                .createdAt(LocalDateTime.now())
                 .build();
         tokenRepository.save(token);
     }

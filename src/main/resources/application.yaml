@@ -31,3 +31,6 @@ application:
     jwt:
       secret-key: 7b3d694878a4e756410e0b104332c245b6fc2a10d87b7031a5466b2d003ed390
       expiration: 86400000 # a day
+
+scheduler:
+  token-cleanup-cron: "0 5 0 * * ?"

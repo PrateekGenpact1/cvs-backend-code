@@ -217,7 +217,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public List<MemberSummaryResponse> getAllMembersSummary() {
-        return repository.findAll().stream()
+        return repository.findByIsRegistrationDoneTrue().stream()
                 .map(member -> MemberSummaryResponse.builder()
                         .firstName(CvsUtility.getOrDefault(member.getFirstName()))
                         .lastName(CvsUtility.getOrDefault(member.getLastName()))
@@ -228,6 +228,8 @@ public class MemberServiceImpl implements MemberService {
                         .anniversary(CvsUtility.getOrDefault(member.getAnniversary()))
                         .baseLocation(CvsUtility.getOrDefault(member.getBaseLocation()))
                         .seatNumber(CvsUtility.getOrDefault(member.getSeatNumber()))
+                        .emailId(CvsUtility.getOrDefault(member.getGenpactMailId()))
+                        .ohrId(CvsUtility.getOrDefault(member.getOhrId()))
                         .build()
                 )
                 .collect(Collectors.toList());

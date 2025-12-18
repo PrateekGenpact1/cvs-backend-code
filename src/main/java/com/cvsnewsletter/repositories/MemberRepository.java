@@ -19,4 +19,6 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
     @Query("SELECT m FROM Member m WHERE m.baseLocation = :location")
     List<Member> findByBaseLocation(@Param("location") String location);
 
+    List<Member> findByIsRegistrationDoneTrue();
+
 }

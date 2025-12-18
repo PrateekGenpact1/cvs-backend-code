@@ -78,4 +78,12 @@ public class CvsUtility {
         return (value != null) ? value : false;
     }
 
+    public static String formatDate(LocalDate date, String pattern) {
+        if (date == null) {
+            return StringUtils.EMPTY;
+        }
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(pattern);
+        return date.format(formatter);
+    }
+
 }

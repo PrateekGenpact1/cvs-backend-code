@@ -94,7 +94,7 @@ public class OnboardServiceImpl implements OnboardService {
 
     @Override
     public List<MemberDetailsDto> getAllMemberDetails() {
-        List<Member> allMemberDetails = repository.findAll();
+        List<Member> allMemberDetails = repository.findByIsRegistrationDoneTrue();
 
         List<MemberDetailsDto> memberList = new ArrayList<>();
         for(Member member : allMemberDetails) {

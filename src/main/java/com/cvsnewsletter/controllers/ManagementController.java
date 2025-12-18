@@ -2,10 +2,13 @@ package com.cvsnewsletter.controllers;
 
 import com.cvsnewsletter.dtos.MemberDetailsDto;
 import com.cvsnewsletter.dtos.request.AssignRoleRequest;
+import com.cvsnewsletter.dtos.request.KudosRequest;
 import com.cvsnewsletter.dtos.request.OnboardRequest;
+import com.cvsnewsletter.services.KudosService;
 import com.cvsnewsletter.services.OnboardService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +22,7 @@ import java.util.Map;
 public class ManagementController {
 
     private final OnboardService service;
+    private final KudosService kudosService;
 
     @PostMapping("/onboard")
     public ResponseEntity<Map<String, String>> register(
@@ -42,6 +46,12 @@ public class ManagementController {
     @GetMapping("/teams")
     public ResponseEntity<List<MemberDetailsDto>> getAllMemberDetails() {
         return ResponseEntity.ok(service.getAllMemberDetails());
+    }
+
+    @PostMapping("/kudos")
+    public ResponseEntity<Map<String, String>> giveKudos(@RequestBody KudosRequest request) {
+        String message = kudosService.giveKudos(request);
+        return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message", message));
     }
 
 }

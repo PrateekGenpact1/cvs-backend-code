@@ -17,5 +17,7 @@ public class MemberSummaryResponse {
     private String anniversary;
     private String baseLocation;
     private String seatNumber;
+    private String emailId;
+    private String ohrId;
 }
 
