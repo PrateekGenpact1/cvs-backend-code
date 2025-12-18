@@ -20,6 +20,10 @@ spring:
         format_sql: true
       database-platform: org.hibernate.dialect.MySQL8Dialect
 
+  h2:
+    console:
+      enabled: false
+
   servlet:
     multipart:
       max-file-size: 1MB
