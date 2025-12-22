@@ -31,7 +31,7 @@ public class KudosController {
         return ResponseEntity.ok(Map.of("message", message));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER') or hasRole('USER')")
     @GetMapping("/approved")
     public ResponseEntity<List<ApprovedKudosResponse>> getApprovedKudosWithImages() {
         return ResponseEntity.ok(service.getApprovedKudosWithImages());
