@@ -18,7 +18,6 @@ public class KudosRequest {
     @NotBlank(message = "Recipient OHR ID is mandatory")
     private String recipientOhrId;
 
-    @NotBlank(message = "Recipient name is mandatory")
     private String recipientName;
 
     @NotBlank(message = "Message is mandatory")
