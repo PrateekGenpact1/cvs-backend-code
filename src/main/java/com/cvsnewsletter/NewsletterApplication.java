@@ -33,7 +33,7 @@ public class NewsletterApplication {
 						.role(Role.ADMIN)
 						.emergencyContactName("Admin")
 						.emergencyPhoneNumber("9876543210")
-						.incorrectPasswordCount(0)
+						.contactNumber("9876543201")
 						.build());
 			}
 		};

@@ -75,15 +75,25 @@ public class MemberController {
     }
 
     @GetMapping("/{ohrId}/image")
-    @PreAuthorize("hasRole('ADMIN') or hasRole('MANAGER') or hasRole('USER')")
     public ResponseEntity<byte[]> getMemberImage(@PathVariable String ohrId) {
         Member member = repository.findByOhrId(ohrId)
                 .orElseThrow(() -> new BadRequestException("Member not found with OHR: " + ohrId));
 
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + member.getImageName() + "\"")
-                .contentType(MediaType.valueOf(member.getImageType()))
-                .body(member.getImageData());
+        String imageName = member.getImageName() != null ? member.getImageName() : "";
+        String imageType = member.getImageType() != null ? member.getImageType() : "";
+
+        byte[] imageData = member.getImageData();
+
+        ResponseEntity.BodyBuilder responseBuilder = ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + imageName + "\"");
+
+        if (!imageType.isEmpty()) {
+            responseBuilder.contentType(MediaType.valueOf(imageType));
+        } else {
+            responseBuilder.contentType(MediaType.APPLICATION_OCTET_STREAM); // fallback
+        }
+
+        return responseBuilder.body(imageData);
     }
 
     @GetMapping("/{ohrId}/hierarchy")
