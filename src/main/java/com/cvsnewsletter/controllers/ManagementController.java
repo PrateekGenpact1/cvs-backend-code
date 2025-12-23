@@ -55,7 +55,7 @@ public class ManagementController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @PutMapping("/{ohrId}/initial-password")
+    @PutMapping("/{ohrId}/reset-password")
     public ResponseEntity<Map<String, String>> updateInitialPasswordFlag(@PathVariable String ohrId) {
         String message = service.updateInitialPasswordFlag(ohrId);
         return ResponseEntity.ok(Map.of("message", message));

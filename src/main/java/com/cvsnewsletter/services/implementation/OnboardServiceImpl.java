@@ -37,7 +37,7 @@ public class OnboardServiceImpl implements OnboardService {
         }
 
         if (request.getMobileNumber().equals(request.getEmergencyPhoneNumber())) {
-            throw new BadRequestException("Mobile number and emergency phone number cannot be the same.");
+            throw new BadRequestException("Phone Number And Emergency Phone Number Can't Be The Same.");
         }
 
         Role role;

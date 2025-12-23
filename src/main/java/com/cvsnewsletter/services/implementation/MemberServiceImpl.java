@@ -110,9 +110,15 @@ public class MemberServiceImpl implements MemberService {
         Member member = repository.findByOhrId(dto.getOhrId())
                 .orElseThrow(() -> new BadRequestException("Member not found with OHR: " + dto.getOhrId()));
 
+        String contactNumber = updateIfNotBlank(dto.getMobileNumber(), member.getContactNumber());
+        String emergencyContactNumber = updateIfNotBlank(dto.getEmergencyPhoneNumber(), member.getEmergencyPhoneNumber());
+        if(contactNumber.equals(emergencyContactNumber)) {
+            throw new BadRequestException("Phone Number And Emergency Phone Number Can't Be The Same.");
+        }
+
         member.setFirstName(updateIfNotBlank(dto.getFirstName(), member.getFirstName()));
         member.setLastName(updateIfNotBlank(dto.getLastName(), member.getLastName()));
-        member.setContactNumber(updateIfNotBlank(dto.getMobileNumber(), member.getContactNumber()));
+        member.setContactNumber(contactNumber);
         member.setCvsMailId(updateIfNotBlank(dto.getEmailId(), member.getCvsMailId()));
         member.setApplicationArea(updateIfNotBlank(dto.getApplicationArea(), member.getApplicationArea()));
         member.setTower(updateIfNotBlank(dto.getTower(), member.getTower()));
@@ -133,7 +139,7 @@ public class MemberServiceImpl implements MemberService {
         member.setHighestDegree(updateIfNotBlank(dto.getHighestDegree(), member.getHighestDegree()));
         member.setCurrentAddress(updateIfNotBlank(dto.getCurrentAddress(), member.getCurrentAddress()));
         member.setEmergencyContactName(updateIfNotBlank(dto.getEmergencyContactName(), member.getEmergencyContactName()));
-        member.setEmergencyPhoneNumber(updateIfNotBlank(dto.getEmergencyPhoneNumber(), member.getEmergencyPhoneNumber()));
+        member.setEmergencyPhoneNumber(emergencyContactNumber);
         member.setSeatNumber(updateIfNotBlank(dto.getSeatNumber(), member.getSeatNumber()));
         member.setPrimarySkill(updateListField(dto.getPrimarySkill(), member.getPrimarySkill()));
         member.setCurrentWorkingSkills(updateListField(dto.getCurrentWorkingSkills(), member.getCurrentWorkingSkills()));
@@ -246,6 +252,10 @@ public class MemberServiceImpl implements MemberService {
 
         if (!CvsUtility.isValidOhrId(memberDetails.getReportingManagerOhrId())) {
             throw new BadRequestException("Reporting manager OHR ID must be a 9-digit numeric value.");
+        }
+
+        if (member.getContactNumber().equals(member.getEmergencyPhoneNumber())) {
+            throw new BadRequestException("Phone Number And Emergency Phone Number Can't Be The Same.");
         }
 
         if(StringUtils.isNotBlank(memberDetails.getBirthday())) {
