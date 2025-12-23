@@ -86,4 +86,24 @@ public class CvsUtility {
         return date.format(formatter);
     }
 
+    public static String extractDesignation(String designationBand) {
+        if (designationBand == null || designationBand.isBlank()) {
+            return "";
+        }
+
+        // Remove leading/trailing spaces and special characters
+        String cleaned = designationBand.trim();
+
+        // Regex: remove patterns like "4A", "5B", "6C" etc. (number + letter band)
+        cleaned = cleaned.replaceAll("\\b\\d+[A-G]\\b", "").trim();
+
+        // Remove leftover dashes or extra spaces
+        cleaned = cleaned.replaceAll("-", " ").trim();
+
+        // Collapse multiple spaces into one
+        cleaned = cleaned.replaceAll("\\s{2,}", " ");
+
+        return cleaned;
+    }
+
 }

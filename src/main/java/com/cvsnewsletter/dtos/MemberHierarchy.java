@@ -11,4 +11,5 @@ public class MemberHierarchy {
     private String ohrId;
     private String name;
     private String reportingManagerOhrId;
+    private String designationBand;
 }

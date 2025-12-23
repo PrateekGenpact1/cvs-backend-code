@@ -23,7 +23,7 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
     List<Member> findByIsRegistrationDoneTrue();
 
     @Query("SELECT new com.cvsnewsletter.dtos.MemberHierarchy(" +
-            "m.ohrId, CONCAT(m.firstName, ' ', m.lastName), m.reportingManagerOhrId) " +
+            "m.ohrId, CONCAT(m.firstName, ' ', m.lastName), m.reportingManagerOhrId, m.designationBand) " +
             "FROM Member m WHERE m.ohrId = :ohrId")
     Optional<MemberHierarchy> findHierarchyByOhrId(@Param("ohrId") String ohrId);
 

@@ -358,10 +358,18 @@ public class MemberServiceImpl implements MemberService {
         while (currentOpt.isPresent()) {
             MemberHierarchy current = currentOpt.get();
 
+            String designation = CvsUtility.extractDesignation(current.getDesignationBand());
+
+            String formattedName = current.getName();
+            if (!designation.isEmpty()) {
+                formattedName = formattedName + " (" + designation + ")";
+            }
+
             MemberHierarchy dto = new MemberHierarchy();
             dto.setOhrId(current.getOhrId());
-            dto.setName(current.getName());
+            dto.setName(formattedName);
             dto.setReportingManagerOhrId(current.getReportingManagerOhrId());
+            dto.setDesignationBand(current.getDesignationBand());
 
             chain.add(dto);
 
@@ -373,7 +381,6 @@ public class MemberServiceImpl implements MemberService {
         }
 
         Collections.reverse(chain);
-
         return chain;
     }
 

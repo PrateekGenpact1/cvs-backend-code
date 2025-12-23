@@ -115,7 +115,7 @@ public class Member implements UserDetails {
     private String seatNumber;
 
     @Column(nullable = false)
-    private Integer incorrectPasswordCount = 0;
+    private int incorrectPasswordCount = 0;
 
     @Column
     private LocalDateTime lastIncorrectPasswordTimestamp;
