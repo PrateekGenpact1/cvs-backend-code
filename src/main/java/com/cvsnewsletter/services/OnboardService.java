@@ -12,4 +12,6 @@ public interface OnboardService {
     void assignRoleToMember(String ohrId, String roleStr);
 
     List<MemberDetailsDto> getAllMemberDetails();
+
+    String updateInitialPasswordFlag(String ohrId);
 }

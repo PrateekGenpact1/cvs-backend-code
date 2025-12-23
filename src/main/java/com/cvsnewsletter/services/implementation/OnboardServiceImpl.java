@@ -104,6 +104,20 @@ public class OnboardServiceImpl implements OnboardService {
         return memberList;
     }
 
+    @Override
+    public String updateInitialPasswordFlag(String ohrId) {
+        Member member = repository.findByOhrId(ohrId)
+                .orElseThrow(() -> new BadRequestException("Member not found with OHR: " + ohrId));
+
+        member.setIsPasswordSet(false);
+        member.setIncorrectPasswordCount(0);
+        member.setLastIncorrectPasswordTimestamp(null);
+        member.setPassword(null);
+        repository.save(member);
+
+        return "Member password status has been successfully updated.";
+    }
+
     private MemberDetailsDto memberDetailsBuilder(Member memberDetails) {
         return MemberDetailsDto.builder()
                 .firstName(memberDetails.getFirstName())
@@ -135,7 +149,7 @@ public class OnboardServiceImpl implements OnboardService {
                 .emergencyContactName(memberDetails.getEmergencyContactName())
                 .emergencyPhoneNumber(memberDetails.getEmergencyPhoneNumber())
                 .isRegistrationDone(memberDetails.getIsRegistrationDone())
-                .isInitialPasswordSet(memberDetails.getIsInitialPasswordSet())
+                .isInitialPasswordSet(memberDetails.getIsPasswordSet())
                 .build();
     }
 

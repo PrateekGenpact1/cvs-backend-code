@@ -2,6 +2,7 @@ package com.cvsnewsletter.services.implementation;
 
 import com.cvsnewsletter.dtos.LimitedMemberDetailsDto;
 import com.cvsnewsletter.dtos.MemberDetailsDto;
+import com.cvsnewsletter.dtos.MemberHierarchy;
 import com.cvsnewsletter.dtos.request.ChangePasswordRequest;
 import com.cvsnewsletter.dtos.request.PasswordRequest;
 import com.cvsnewsletter.dtos.response.MemberLocationResponse;
@@ -20,7 +21,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,7 +50,7 @@ public class MemberServiceImpl implements MemberService {
                         String.format("Member not found with OHR ID: %s and Emergency Phone Number: %s", ohrId, emergencyPhoneNumber)
                 ));
 
-        if (Boolean.TRUE.equals(memberDetails.getIsInitialPasswordSet())) {
+        if (Boolean.TRUE.equals(memberDetails.getIsPasswordSet())) {
             throw new BadRequestException("The member has already set their password. Please log in to view full details.");
         }
 
@@ -57,7 +61,7 @@ public class MemberServiceImpl implements MemberService {
                 .emailId(CvsUtility.getOrDefault(memberDetails.getGenpactMailId()))
                 .mobileNumber(CvsUtility.getOrDefault(memberDetails.getContactNumber()))
                 .role(memberDetails.getRole().name())
-                .isInitialPasswordSet(CvsUtility.getOrDefault(memberDetails.getIsInitialPasswordSet()))
+                .isInitialPasswordSet(CvsUtility.getOrDefault(memberDetails.getIsPasswordSet()))
                 .emergencyContactName(CvsUtility.getOrDefault(memberDetails.getEmergencyContactName()))
                 .emergencyPhoneNumber(CvsUtility.getOrDefault(memberDetails.getEmergencyPhoneNumber()))
                 .build();
@@ -178,12 +182,12 @@ public class MemberServiceImpl implements MemberService {
         Member user = repository.findByOhrId(passwordRequest.getOhrId())
                 .orElseThrow(() -> new BadRequestException("Member not found with OHR: " + ohrId));
 
-        if (user.getIsInitialPasswordSet() != null && user.getIsInitialPasswordSet()) {
+        if (user.getIsPasswordSet() != null && user.getIsPasswordSet()) {
             throw new BadRequestException("Member has already set the initial password. Please log in and change your password.");
         }
 
         user.setPassword(passwordEncoder.encode(passwordRequest.getPassword()));
-        user.setIsInitialPasswordSet(true);
+        user.setIsPasswordSet(true);
 
         repository.save(user);
 
@@ -240,6 +244,10 @@ public class MemberServiceImpl implements MemberService {
         Member member = repository.findByOhrId(memberDetails.getOhrId())
                 .orElseThrow(() -> new BadRequestException("Member not found with OHR: " + memberDetails.getOhrId()));
 
+        if (!CvsUtility.isValidOhrId(memberDetails.getReportingManagerOhrId())) {
+            throw new BadRequestException("Reporting manager OHR ID must be a 9-digit numeric value.");
+        }
+
         if(StringUtils.isNotBlank(memberDetails.getBirthday())) {
             if (CvsUtility.isValidDate(memberDetails.getBirthday())) {
                 member.setBirthday(memberDetails.getBirthday());
@@ -265,6 +273,7 @@ public class MemberServiceImpl implements MemberService {
         member.setApplicationArea(memberDetails.getApplicationArea());
         member.setTower(memberDetails.getTower());
         member.setReportingManager(memberDetails.getReportingManager());
+        member.setReportingManagerOhrId(memberDetails.getReportingManagerOhrId());
         member.setGenpactOnsiteSpoc(memberDetails.getGenpactOnsiteSpoc());
         member.setBaseLocation(memberDetails.getBaseLocation());
         member.setPrimarySkill(String.join(",", memberDetails.getPrimarySkill()));
@@ -325,7 +334,7 @@ public class MemberServiceImpl implements MemberService {
                 .emergencyContactName(memberDetails.getEmergencyContactName())
                 .emergencyPhoneNumber(memberDetails.getEmergencyPhoneNumber())
                 .isRegistrationDone(memberDetails.getIsRegistrationDone())
-                .isInitialPasswordSet(memberDetails.getIsInitialPasswordSet())
+                .isInitialPasswordSet(memberDetails.getIsPasswordSet())
                 .build();
     }
 
@@ -338,6 +347,34 @@ public class MemberServiceImpl implements MemberService {
             return oldValue;
         }
         return String.join(",", newList);
+    }
+
+    @Override
+    public List<MemberHierarchy> getMemberHierarchyFlat(String ohrId) {
+        List<MemberHierarchy> chain = new ArrayList<>();
+
+        Optional<MemberHierarchy> currentOpt = repository.findHierarchyByOhrId(ohrId);
+
+        while (currentOpt.isPresent()) {
+            MemberHierarchy current = currentOpt.get();
+
+            MemberHierarchy dto = new MemberHierarchy();
+            dto.setOhrId(current.getOhrId());
+            dto.setName(current.getName());
+            dto.setReportingManagerOhrId(current.getReportingManagerOhrId());
+
+            chain.add(dto);
+
+            if (current.getReportingManagerOhrId() != null) {
+                currentOpt = repository.findHierarchyByOhrId(current.getReportingManagerOhrId());
+            } else {
+                currentOpt = Optional.empty();
+            }
+        }
+
+        Collections.reverse(chain);
+
+        return chain;
     }
 
 }

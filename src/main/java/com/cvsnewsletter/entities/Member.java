@@ -10,18 +10,21 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "member")
+@Table(
+        name = "member",
+        indexes = {
+                @Index(name = "idx_member_ohrid", columnList = "ohrId")
+        }
+)
 public class Member implements UserDetails {
 
     @Id
@@ -34,6 +37,9 @@ public class Member implements UserDetails {
     @Column(length = 100)
     private String lastName;
 
+    @Column(length = 9, unique = true, nullable = false)
+    private String ohrId;
+
     @Column(length = 100)
     private String applicationArea;
 
@@ -43,11 +49,11 @@ public class Member implements UserDetails {
     @Column(length = 150)
     private String reportingManager;
 
+    @Column(length = 9)
+    private String reportingManagerOhrId;
+
     @Column(length = 150)
     private String genpactOnsiteSpoc;
-
-    @Column(length = 9, unique = true, nullable = false)
-    private String ohrId;
 
     private String baseLocation;
 
@@ -97,7 +103,7 @@ public class Member implements UserDetails {
 
     private Boolean isRegistrationDone = false;
 
-    private Boolean isInitialPasswordSet = false;
+    private Boolean isPasswordSet = false;
 
     private String imageName;
 
@@ -107,6 +113,12 @@ public class Member implements UserDetails {
     private byte[] imageData;
 
     private String seatNumber;
+
+    @Column(nullable = false)
+    private Integer incorrectPasswordCount = 0;
+
+    @Column
+    private LocalDateTime lastIncorrectPasswordTimestamp;
 
     @Enumerated(EnumType.STRING)
     private Role role;

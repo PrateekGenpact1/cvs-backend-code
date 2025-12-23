@@ -2,12 +2,14 @@ package com.cvsnewsletter.controllers;
 
 import com.cvsnewsletter.dtos.LimitedMemberDetailsDto;
 import com.cvsnewsletter.dtos.MemberDetailsDto;
+import com.cvsnewsletter.dtos.MemberHierarchy;
 import com.cvsnewsletter.dtos.request.PasswordRequest;
 import com.cvsnewsletter.entities.Member;
 import com.cvsnewsletter.exception.BadRequestException;
 import com.cvsnewsletter.repositories.MemberRepository;
 import com.cvsnewsletter.services.MemberService;
 import com.cvsnewsletter.utility.CvsUtility;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -52,7 +55,7 @@ public class MemberController {
     @PutMapping("/update")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, String>> updateMemberDetails(
-            @RequestPart MemberDetailsDto memberDetailsDto,
+            @Valid @RequestPart MemberDetailsDto memberDetailsDto,
             @RequestPart(value = "image", required = false) MultipartFile image) {
         try {
             if (image != null && !CvsUtility.isImageFile(image)) {
@@ -81,6 +84,11 @@ public class MemberController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "inline; filename=\"" + member.getImageName() + "\"")
                 .contentType(MediaType.valueOf(member.getImageType()))
                 .body(member.getImageData());
+    }
+
+    @GetMapping("/{ohrId}/hierarchy")
+    public ResponseEntity<List<MemberHierarchy>> getMemberHierarchyFlat(@PathVariable String ohrId) {
+        return ResponseEntity.ok(service.getMemberHierarchyFlat(ohrId));
     }
 
 }

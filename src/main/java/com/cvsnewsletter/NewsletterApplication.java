@@ -29,10 +29,11 @@ public class NewsletterApplication {
 						.lastName("Admin")
 						.ohrId("987654321")
 						.password(encoder.encode("password"))
-						.isInitialPasswordSet(true)
+						.isPasswordSet(true)
 						.role(Role.ADMIN)
 						.emergencyContactName("Admin")
 						.emergencyPhoneNumber("9876543210")
+						.incorrectPasswordCount(0)
 						.build());
 			}
 		};

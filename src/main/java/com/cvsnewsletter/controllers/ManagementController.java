@@ -54,4 +54,11 @@ public class ManagementController {
         return ResponseEntity.status(HttpStatus.CREATED).body(Map.of("message", message));
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping("/{ohrId}/initial-password")
+    public ResponseEntity<Map<String, String>> updateInitialPasswordFlag(@PathVariable String ohrId) {
+        String message = service.updateInitialPasswordFlag(ohrId);
+        return ResponseEntity.ok(Map.of("message", message));
+    }
+
 }
