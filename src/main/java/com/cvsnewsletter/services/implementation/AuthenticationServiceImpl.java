@@ -32,7 +32,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var user = repository.findByOhrId(request.getOhrId())
                 .orElseThrow(() -> new BadRequestException("User not found!!!"));
 
-        System.out.println("time =>" + lockoutProperties.getDurationMinutes());
         if (user.getIncorrectPasswordCount() >= lockoutProperties.getMaxAttempts()
                 && user.getLastIncorrectPasswordTimestamp() != null) {
             LocalDateTime lockoutEnd = user.getLastIncorrectPasswordTimestamp()
@@ -57,7 +56,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             user.setIncorrectPasswordCount(user.getIncorrectPasswordCount() + 1);
             user.setLastIncorrectPasswordTimestamp(LocalDateTime.now());
             repository.save(user);
-            System.out.println(lockoutProperties.getMaxAttempts());
             throw new BadRequestException("Invalid credentials. Attempt " + user.getIncorrectPasswordCount() + "/" + lockoutProperties.getMaxAttempts());
         }
 
