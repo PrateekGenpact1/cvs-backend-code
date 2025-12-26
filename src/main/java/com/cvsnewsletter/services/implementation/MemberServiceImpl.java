@@ -303,8 +303,6 @@ public class MemberServiceImpl implements MemberService {
         member.setBirthday(memberDetails.getBirthday());
         member.setAnniversary(memberDetails.getAnniversary());
         member.setCurrentAddress(memberDetails.getCurrentAddress());
-        member.setEmergencyContactName(memberDetails.getEmergencyContactName());
-        member.setEmergencyPhoneNumber(memberDetails.getEmergencyPhoneNumber());
         member.setSeatNumber(memberDetails.getSeatNumber());
 
         // Mark registration done
