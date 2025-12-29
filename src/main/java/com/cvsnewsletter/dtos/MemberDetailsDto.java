@@ -1,6 +1,7 @@
 package com.cvsnewsletter.dtos;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -30,6 +31,7 @@ public class MemberDetailsDto {
 
     @Email(message = "Email must be valid")
     @NotBlank(message = "Email is mandatory")
+    @JsonProperty("emailId")
     private String emailId;
 
     private String applicationArea;

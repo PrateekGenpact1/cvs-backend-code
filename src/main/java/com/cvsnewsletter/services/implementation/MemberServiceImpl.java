@@ -119,10 +119,11 @@ public class MemberServiceImpl implements MemberService {
         member.setFirstName(updateIfNotBlank(dto.getFirstName(), member.getFirstName()));
         member.setLastName(updateIfNotBlank(dto.getLastName(), member.getLastName()));
         member.setContactNumber(contactNumber);
-        member.setCvsMailId(updateIfNotBlank(dto.getEmailId(), member.getCvsMailId()));
+        member.setGenpactMailId(updateIfNotBlank(dto.getEmailId(), member.getGenpactMailId()));
         member.setApplicationArea(updateIfNotBlank(dto.getApplicationArea(), member.getApplicationArea()));
         member.setTower(updateIfNotBlank(dto.getTower(), member.getTower()));
         member.setReportingManager(updateIfNotBlank(dto.getReportingManager(), member.getReportingManager()));
+        member.setReportingManagerOhrId(updateIfNotBlank(dto.getReportingManagerOhrId(), member.getReportingManagerOhrId()));
         member.setGenpactOnsiteSpoc(updateIfNotBlank(dto.getGenpactOnsiteSpoc(), member.getGenpactOnsiteSpoc()));
         member.setBaseLocation(updateIfNotBlank(dto.getBaseLocation(), member.getBaseLocation()));
         member.setDesignationBand(updateIfNotBlank(dto.getDesignationBand(), member.getDesignationBand()));
@@ -143,6 +144,7 @@ public class MemberServiceImpl implements MemberService {
         member.setSeatNumber(updateIfNotBlank(dto.getSeatNumber(), member.getSeatNumber()));
         member.setPrimarySkill(updateListField(dto.getPrimarySkill(), member.getPrimarySkill()));
         member.setCurrentWorkingSkills(updateListField(dto.getCurrentWorkingSkills(), member.getCurrentWorkingSkills()));
+        member.setSeatNumber(updateIfNotBlank(dto.getSeatNumber(), member.getSeatNumber()));
 
         if (StringUtils.isNotBlank(dto.getBirthday())) {
             if (CvsUtility.isValidDate(dto.getBirthday())) {
@@ -318,6 +320,7 @@ public class MemberServiceImpl implements MemberService {
                 .applicationArea(memberDetails.getApplicationArea())
                 .tower(memberDetails.getTower())
                 .reportingManager(memberDetails.getReportingManager())
+                .reportingManagerOhrId(memberDetails.getReportingManagerOhrId())
                 .genpactOnsiteSpoc(memberDetails.getGenpactOnsiteSpoc())
                 .ohrId(memberDetails.getOhrId())
                 .baseLocation(memberDetails.getBaseLocation())
@@ -335,6 +338,7 @@ public class MemberServiceImpl implements MemberService {
                 .emailId(memberDetails.getGenpactMailId())
                 .ssn(memberDetails.getSsn())
                 .cvsEmpId(memberDetails.getCvsEmpId())
+                .cvsMailId(memberDetails.getCvsMailId())
                 .highestDegree(memberDetails.getHighestDegree())
                 .birthday(memberDetails.getBirthday())
                 .anniversary(memberDetails.getAnniversary())
@@ -343,6 +347,7 @@ public class MemberServiceImpl implements MemberService {
                 .emergencyPhoneNumber(memberDetails.getEmergencyPhoneNumber())
                 .isRegistrationDone(memberDetails.getIsRegistrationDone())
                 .isInitialPasswordSet(memberDetails.getIsPasswordSet())
+                .seatNumber(memberDetails.getSeatNumber())
                 .build();
     }
 
