@@ -20,8 +20,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 @RequestMapping("/api/v1/member")
@@ -98,7 +101,18 @@ public class MemberController {
 
     @GetMapping("/{ohrId}/hierarchy")
     public ResponseEntity<List<MemberHierarchy>> getMemberHierarchyFlat(@PathVariable String ohrId) {
-        return ResponseEntity.ok(service.getMemberHierarchyFlat(ohrId));
+        try {
+            List<MemberHierarchy> result = CompletableFuture
+                    .supplyAsync(() -> service.getMemberHierarchyFlat(ohrId))
+                    .orTimeout(30, TimeUnit.SECONDS)
+                    .join();
+
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT)
+                    .body(Collections.emptyList());
+        }
     }
+
 
 }

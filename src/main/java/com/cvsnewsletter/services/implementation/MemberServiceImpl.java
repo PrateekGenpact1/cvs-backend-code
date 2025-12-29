@@ -1,6 +1,7 @@
 package com.cvsnewsletter.services.implementation;
 
 import com.cvsnewsletter.dtos.LimitedMemberDetailsDto;
+import com.cvsnewsletter.dtos.MemberBasicInfo;
 import com.cvsnewsletter.dtos.MemberDetailsDto;
 import com.cvsnewsletter.dtos.MemberHierarchy;
 import com.cvsnewsletter.dtos.request.ChangePasswordRequest;
@@ -21,10 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -365,11 +363,16 @@ public class MemberServiceImpl implements MemberService {
     @Override
     public List<MemberHierarchy> getMemberHierarchyFlat(String ohrId) {
         List<MemberHierarchy> chain = new ArrayList<>();
-
         Optional<MemberHierarchy> currentOpt = repository.findHierarchyByOhrId(ohrId);
+
+        Set<String> visited = new HashSet<>();
 
         while (currentOpt.isPresent()) {
             MemberHierarchy current = currentOpt.get();
+
+            if (!visited.add(current.getOhrId())) {
+                break;
+            }
 
             String designation = CvsUtility.extractDesignation(current.getDesignationBand());
 
@@ -395,6 +398,11 @@ public class MemberServiceImpl implements MemberService {
 
         Collections.reverse(chain);
         return chain;
+    }
+
+    @Override
+    public List<MemberBasicInfo> getAllOhrIdsWithNames() {
+        return repository.findAllOhrIdsWithNames();
     }
 
 }

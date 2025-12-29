@@ -1,5 +1,6 @@
 package com.cvsnewsletter.repositories;
 
+import com.cvsnewsletter.dtos.MemberBasicInfo;
 import com.cvsnewsletter.dtos.MemberHierarchy;
 import com.cvsnewsletter.entities.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -26,5 +27,10 @@ public interface MemberRepository extends JpaRepository<Member, Integer> {
             "m.ohrId, CONCAT(m.firstName, ' ', m.lastName), m.reportingManagerOhrId, m.designationBand) " +
             "FROM Member m WHERE m.ohrId = :ohrId")
     Optional<MemberHierarchy> findHierarchyByOhrId(@Param("ohrId") String ohrId);
+
+    @Query("SELECT new com.cvsnewsletter.dtos.MemberBasicInfo(" +
+            "m.ohrId, CONCAT(m.firstName, ' ', m.lastName)) " +
+            "FROM Member m")
+    List<MemberBasicInfo> findAllOhrIdsWithNames();
 
 }

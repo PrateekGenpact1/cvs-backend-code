@@ -1,5 +1,6 @@
 package com.cvsnewsletter.controllers;
 
+import com.cvsnewsletter.dtos.MemberBasicInfo;
 import com.cvsnewsletter.dtos.MemberDetailsDto;
 import com.cvsnewsletter.dtos.request.ChangePasswordRequest;
 import com.cvsnewsletter.dtos.response.MemberLocationResponse;
@@ -88,6 +89,11 @@ public class UserController {
     @GetMapping("/summary")
     public ResponseEntity<List<MemberSummaryResponse>> getAllMembersSummary() {
         return ResponseEntity.ok(service.getAllMembersSummary());
+    }
+
+    @GetMapping("/ohrIdsWithNames")
+    public ResponseEntity<List<MemberBasicInfo>> getAllOhrIdsWithNames() {
+        return ResponseEntity.ok(service.getAllOhrIdsWithNames());
     }
 
 }

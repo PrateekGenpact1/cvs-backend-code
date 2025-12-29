@@ -1,6 +1,7 @@
 package com.cvsnewsletter.services;
 
 import com.cvsnewsletter.dtos.LimitedMemberDetailsDto;
+import com.cvsnewsletter.dtos.MemberBasicInfo;
 import com.cvsnewsletter.dtos.MemberHierarchy;
 import com.cvsnewsletter.dtos.request.ChangePasswordRequest;
 import com.cvsnewsletter.dtos.MemberDetailsDto;
@@ -31,4 +32,6 @@ public interface MemberService {
     List<MemberSummaryResponse> getAllMembersSummary();
 
     List<MemberHierarchy> getMemberHierarchyFlat(String ohrId);
+
+    List<MemberBasicInfo> getAllOhrIdsWithNames();
 }
