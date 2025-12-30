@@ -23,14 +23,33 @@ public class NewsletterApplication {
 			MemberRepository repository, PasswordEncoder encoder
 	) {
 		return args -> {
-			if(repository.findByOhrId("987654321").isEmpty()) {
+			String managerOhrId = "123456789";
+			Member manager = repository.findByOhrId(managerOhrId)
+					.orElseGet(() -> repository.save(Member.builder()
+							.firstName("Manager")
+							.lastName("Manager")
+							.ohrId(managerOhrId)
+							.password(encoder.encode("managerpass"))
+							.isPasswordSet(true)
+							.role(Role.MANAGER)
+							.designationBand("4D Principal Consultant")
+							.emergencyContactName("Manager")
+							.emergencyPhoneNumber("1234567890")
+							.contactNumber("1234567801")
+							.build()));
+
+			String adminOhrId = "987654321";
+			if (repository.findByOhrId(adminOhrId).isEmpty()) {
 				repository.save(Member.builder()
 						.firstName("Admin")
 						.lastName("Admin")
-						.ohrId("987654321")
+						.ohrId(adminOhrId)
 						.password(encoder.encode("password"))
 						.isPasswordSet(true)
 						.role(Role.ADMIN)
+						.designationBand("4B Consultant")
+						.reportingManager(manager.getFirstName() + " " + manager.getLastName())
+						.reportingManagerOhrId(manager.getOhrId())
 						.emergencyContactName("Admin")
 						.emergencyPhoneNumber("9876543210")
 						.contactNumber("9876543201")
