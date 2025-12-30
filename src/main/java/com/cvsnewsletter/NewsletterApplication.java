@@ -23,7 +23,7 @@ public class NewsletterApplication {
 			MemberRepository repository, PasswordEncoder encoder
 	) {
 		return args -> {
-			String managerOhrId = "123456789";
+			String managerOhrId = "123456789"; // unique OHR ID for manager
 			Member manager = repository.findByOhrId(managerOhrId)
 					.orElseGet(() -> repository.save(Member.builder()
 							.firstName("Manager")
@@ -33,12 +33,13 @@ public class NewsletterApplication {
 							.isPasswordSet(true)
 							.role(Role.MANAGER)
 							.designationBand("4D Principal Consultant")
+							.genpactMailId("manager@genpact.com")
 							.emergencyContactName("Manager")
 							.emergencyPhoneNumber("1234567890")
 							.contactNumber("1234567801")
 							.build()));
 
-			String adminOhrId = "987654321";
+			String adminOhrId = "987654321"; // unique OHR ID for admin
 			if (repository.findByOhrId(adminOhrId).isEmpty()) {
 				repository.save(Member.builder()
 						.firstName("Admin")
@@ -50,6 +51,7 @@ public class NewsletterApplication {
 						.designationBand("4B Consultant")
 						.reportingManager(manager.getFirstName() + " " + manager.getLastName())
 						.reportingManagerOhrId(manager.getOhrId())
+						.genpactMailId("admin@genpact.com")
 						.emergencyContactName("Admin")
 						.emergencyPhoneNumber("9876543210")
 						.contactNumber("9876543201")
