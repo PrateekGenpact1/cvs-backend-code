@@ -128,7 +128,7 @@ public class OnboardServiceImpl implements OnboardService {
                 .genpactOnsiteSpoc(memberDetails.getGenpactOnsiteSpoc())
                 .ohrId(memberDetails.getOhrId())
                 .baseLocation(memberDetails.getBaseLocation())
-                .primarySkill(CvsUtility.safeSplitToList(memberDetails.getPrimarySkill()))
+                .primarySkill(memberDetails.getPrimarySkill())
                 .currentWorkingSkills(CvsUtility.safeSplitToList(memberDetails.getCurrentWorkingSkills()))
                 .designationBand(memberDetails.getDesignationBand())
                 .cvsLead(memberDetails.getCvsLead())

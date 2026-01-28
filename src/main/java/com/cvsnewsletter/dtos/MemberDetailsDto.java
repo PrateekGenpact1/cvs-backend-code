@@ -43,7 +43,7 @@ public class MemberDetailsDto {
     private String reportingManager;
     private String genpactOnsiteSpoc;
     private String baseLocation;
-    private List<String> primarySkill;
+    private String primarySkill;
     private List<String> currentWorkingSkills;
     private String designationBand;
     private String cvsLead;

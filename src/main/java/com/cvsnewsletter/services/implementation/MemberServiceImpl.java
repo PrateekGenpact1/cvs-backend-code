@@ -140,7 +140,7 @@ public class MemberServiceImpl implements MemberService {
         member.setEmergencyContactName(updateIfNotBlank(dto.getEmergencyContactName(), member.getEmergencyContactName()));
         member.setEmergencyPhoneNumber(emergencyContactNumber);
         member.setSeatNumber(updateIfNotBlank(dto.getSeatNumber(), member.getSeatNumber()));
-        member.setPrimarySkill(updateListField(dto.getPrimarySkill(), member.getPrimarySkill()));
+        member.setPrimarySkill(updateIfNotBlank(dto.getPrimarySkill(), member.getPrimarySkill()));
         member.setCurrentWorkingSkills(updateListField(dto.getCurrentWorkingSkills(), member.getCurrentWorkingSkills()));
         member.setSeatNumber(updateIfNotBlank(dto.getSeatNumber(), member.getSeatNumber()));
 
@@ -286,7 +286,7 @@ public class MemberServiceImpl implements MemberService {
         member.setReportingManagerOhrId(memberDetails.getReportingManagerOhrId());
         member.setGenpactOnsiteSpoc(memberDetails.getGenpactOnsiteSpoc());
         member.setBaseLocation(memberDetails.getBaseLocation());
-        member.setPrimarySkill(String.join(",", memberDetails.getPrimarySkill()));
+        member.setPrimarySkill(memberDetails.getPrimarySkill());
         member.setCurrentWorkingSkills(String.join(",", memberDetails.getCurrentWorkingSkills()));
         member.setDesignationBand(memberDetails.getDesignationBand());
         member.setCvsLead(memberDetails.getCvsLead());
@@ -322,7 +322,7 @@ public class MemberServiceImpl implements MemberService {
                 .genpactOnsiteSpoc(memberDetails.getGenpactOnsiteSpoc())
                 .ohrId(memberDetails.getOhrId())
                 .baseLocation(memberDetails.getBaseLocation())
-                .primarySkill(CvsUtility.safeSplitToList(memberDetails.getPrimarySkill()))
+                .primarySkill(memberDetails.getPrimarySkill())
                 .currentWorkingSkills(CvsUtility.safeSplitToList(memberDetails.getCurrentWorkingSkills()))
                 .designationBand(memberDetails.getDesignationBand())
                 .cvsLead(memberDetails.getCvsLead())
