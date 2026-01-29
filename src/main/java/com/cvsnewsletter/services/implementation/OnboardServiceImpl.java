@@ -129,7 +129,7 @@ public class OnboardServiceImpl implements OnboardService {
                 .ohrId(memberDetails.getOhrId())
                 .baseLocation(memberDetails.getBaseLocation())
                 .primarySkill(memberDetails.getPrimarySkill())
-                .currentWorkingSkills(CvsUtility.safeSplitToList(memberDetails.getCurrentWorkingSkills()))
+                .secondarySkill(CvsUtility.safeSplitToList(memberDetails.getSecondarySkill()))
                 .designationBand(memberDetails.getDesignationBand())
                 .cvsLead(memberDetails.getCvsLead())
                 .clientManager(memberDetails.getClientManager())

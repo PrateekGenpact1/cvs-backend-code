@@ -141,7 +141,7 @@ public class MemberServiceImpl implements MemberService {
         member.setEmergencyPhoneNumber(emergencyContactNumber);
         member.setSeatNumber(updateIfNotBlank(dto.getSeatNumber(), member.getSeatNumber()));
         member.setPrimarySkill(updateIfNotBlank(dto.getPrimarySkill(), member.getPrimarySkill()));
-        member.setCurrentWorkingSkills(updateListField(dto.getCurrentWorkingSkills(), member.getCurrentWorkingSkills()));
+        member.setSecondarySkill(updateListField(dto.getSecondarySkill(), member.getSecondarySkill()));
         member.setSeatNumber(updateIfNotBlank(dto.getSeatNumber(), member.getSeatNumber()));
 
         if (StringUtils.isNotBlank(dto.getBirthday())) {
@@ -287,7 +287,7 @@ public class MemberServiceImpl implements MemberService {
         member.setGenpactOnsiteSpoc(memberDetails.getGenpactOnsiteSpoc());
         member.setBaseLocation(memberDetails.getBaseLocation());
         member.setPrimarySkill(memberDetails.getPrimarySkill());
-        member.setCurrentWorkingSkills(String.join(",", memberDetails.getCurrentWorkingSkills()));
+        member.setSecondarySkill(String.join(",", memberDetails.getSecondarySkill()));
         member.setDesignationBand(memberDetails.getDesignationBand());
         member.setCvsLead(memberDetails.getCvsLead());
         member.setClientManager(memberDetails.getClientManager());
@@ -323,7 +323,7 @@ public class MemberServiceImpl implements MemberService {
                 .ohrId(memberDetails.getOhrId())
                 .baseLocation(memberDetails.getBaseLocation())
                 .primarySkill(memberDetails.getPrimarySkill())
-                .currentWorkingSkills(CvsUtility.safeSplitToList(memberDetails.getCurrentWorkingSkills()))
+                .secondarySkill(CvsUtility.safeSplitToList(memberDetails.getSecondarySkill()))
                 .designationBand(memberDetails.getDesignationBand())
                 .cvsLead(memberDetails.getCvsLead())
                 .clientManager(memberDetails.getClientManager())

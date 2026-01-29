@@ -44,7 +44,7 @@ public class MemberDetailsDto {
     private String genpactOnsiteSpoc;
     private String baseLocation;
     private String primarySkill;
-    private List<String> currentWorkingSkills;
+    private List<String> secondarySkill;
     private String designationBand;
     private String cvsLead;
     private String clientManager;

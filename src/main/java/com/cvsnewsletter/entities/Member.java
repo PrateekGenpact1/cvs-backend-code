@@ -59,7 +59,7 @@ public class Member implements UserDetails {
 
     private String primarySkill;
 
-    private String currentWorkingSkills;
+    private String secondarySkill;
 
     private String designationBand;
 
